@@ -1,17 +1,20 @@
-import pydantic
 from typing import List
-from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy import Integer, String, DateTime, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
 
 class User(Base):
     __tablename__ = "User"
+
     ID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     Username: Mapped[str] = mapped_column(String, unique=True, index=True)
     HashedPassword: Mapped[str] = mapped_column(String)
-    Bio : Mapped[str] = mapped_column(String)
-    ProfileImage : Mapped[str] = mapped_column(String)
+    Bio: Mapped[str] = mapped_column(String)
+    ProfileImage: Mapped[str] = mapped_column(String)
+
+    posts: Mapped[List["Post"]] = relationship("Post", back_populates="user")
+
 
 class Post(Base):
     __tablename__ = "Post"
@@ -20,13 +23,16 @@ class Post(Base):
     UserID: Mapped[int] = mapped_column(Integer, ForeignKey("User.ID"))
     Date: Mapped[DateTime] = mapped_column(DateTime)
     Description: Mapped[str] = mapped_column(String)
-       
+
+    user: Mapped["User"] = relationship("User", back_populates="posts")
+    images: Mapped[List["PostImage"]] = relationship("PostImage", back_populates="post")
+
 
 class PostImage(Base):
     __tablename__ = "PostImage"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    post_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("Post.ID") 
-    )
+
+    ID: Mapped[int] = mapped_column(Integer, primary_key=True)
+    PostID: Mapped[int] = mapped_column(Integer, ForeignKey("Post.ID"))
     image: Mapped[str] = mapped_column(String)
+
+    post: Mapped["Post"] = relationship("Post", back_populates="images")

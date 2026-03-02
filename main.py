@@ -18,7 +18,7 @@ origins = [
     'http://localhost:3000'
 ]
 
-@app.get('/user/{user_id}/posts', response_model=List[PostBase])
+@app.get('/user/{user_id}/posts')
 def posts(user_id: int, db: Session = Depends(get_db)):
     return db_handler.get_all_posts_by_user(db, user_id=user_id)
 

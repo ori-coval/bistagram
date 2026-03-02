@@ -20,10 +20,10 @@ from fastapi import HTTPException, status
 #         db.refresh(new_post)
 #         return  new_post
 
-def get_all_posts_by_user(db: Session, user_id: int) -> List[Post]:
+def get_all_posts_by_user(db: Session, user_id: int):
     return (
         db.query(Post)
-        # .options(joinedload(Post.images))
+        .options(joinedload(Post.images))
         # .filter(Post.UserID == user_id)
         .all()
     )
