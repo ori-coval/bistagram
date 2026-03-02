@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql/mysql-server:latest
+    container_name: bistagram-mysql
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_DATABASE: bistagram
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - mysql-test-vol:/var/lib/mysql
+
+volumes:
+  mysql-test-vol:
