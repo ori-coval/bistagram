@@ -16,15 +16,18 @@ class UserDisplay(BaseModel):
 
 
 class PostBase(BaseModel):
-    image_url: str
-    caption: str
-    creator_id: int
+    ID: int
+    UserID: int
+    Date: datetime
+    Description: str
 
 
 class PostDisplay(BaseModel):
     id: int
-    image_url: str
-    caption: str
+    user_id: int
     timestamp: datetime
-    user: UserDisplay
+    caption: str
+
+    class Config:
+        from_attributes = True  # Pydantic v2
     
