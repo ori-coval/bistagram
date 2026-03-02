@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm.session import Session
 from fastapi import Depends
@@ -18,7 +18,8 @@ origins = ["http://localhost:3000"]
 
 
 @app.get("/user/{user_id}/posts")
-def posts(user_id: int, db: Session = Depends(get_db)):
+def posts(response: Response, user_id: int, db: Session = Depends(get_db)):
+    response.headers["Access-Control-Allow-Origin"] = "*"
     return db_handler.get_all_posts_by_user(db, user_id=user_id)
 
 
