@@ -12,6 +12,14 @@ services:
       MYSQL_ROOT_PASSWORD: password
     volumes:
       - mysql-test-vol:/var/lib/mysql
-
+      
+  api:
+    build:
+      context: .
+      target: fast
+    container_name: fastapi-application
+    ports:
+      - 9512:80
+    restart: "no"
 volumes:
   mysql-test-vol:
