@@ -1,6 +1,6 @@
 const UploadPostForm = () => {
   return (
-    <form action="http://IP:PORT/upload-post" encType="multipart/form-data" method="post">
+    <form action="http://localhost:5000/upload-post" encType="multipart/form-data" method="post">
       <label htmlFor="image">Image: </label>
       <input
         id="image"

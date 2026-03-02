@@ -2,26 +2,28 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import type { Post } from "../types";
 
-const PostScroll = ({ userId }: { userId: string }) => {
+const PostScroll = ({ userId }: { userId: number }) => {
   const [posts, setPosts] = useState<Array<Post>>([]);
 
   useEffect(() => {
     axios
-      .get("http://IP:PORT/user-posts/" + userId)
+      .get("http://85.65.146.6:9512/user/1/posts")
       .then((response) => {
         setPosts(response.data);
       })
       .catch((err) => {
-        console.error("Error while fetching data: ", err);
+        // error handling
       });
   }, []);
 
   return (
-    <ul>
-      {posts.map((post) => (
-        <li key={post.id}>{post.description}</li>
-      ))}
-    </ul>
+    <div>
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>{post.description}</li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
