@@ -4,10 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm.session import Session
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from backend.db import db_handler
-from backend.db.database import get_db
-from backend.routes.schemas import PostBase
 from typing import List
+
+from db import db_handler
+from db.database import get_db
 app = FastAPI()
 
 @app.get("")

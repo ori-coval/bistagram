@@ -1,6 +1,6 @@
 from typing import List
 
-from backend.routes.schemas import PostBase
+from routes.schemas import PostBase
 from sqlalchemy.orm import joinedload
 # from ..routers.schemas import PostBase, PostDisplay
 from .models import Post
