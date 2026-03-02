@@ -7,7 +7,7 @@ from .database import Base
 class User(Base):
     __tablename__ = "User"
 
-    ID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    ID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
     Username: Mapped[str] = mapped_column(String, unique=True, index=True)
     HashedPassword: Mapped[str] = mapped_column(String)
     Bio: Mapped[str] = mapped_column(String)
@@ -19,7 +19,7 @@ class User(Base):
 class Post(Base):
     __tablename__ = "Post"
 
-    ID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    ID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
     UserID: Mapped[int] = mapped_column(Integer, ForeignKey("User.ID"))
     Date: Mapped[DateTime] = mapped_column(DateTime)
     Description: Mapped[str] = mapped_column(String)
@@ -31,7 +31,7 @@ class Post(Base):
 class PostImage(Base):
     __tablename__ = "PostImage"
 
-    ID: Mapped[int] = mapped_column(Integer, primary_key=True)
+    ID: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     PostID: Mapped[int] = mapped_column(Integer, ForeignKey("Post.ID"))
     image: Mapped[str] = mapped_column(String)
 

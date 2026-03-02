@@ -1,4 +1,3 @@
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.orm.session import Session
@@ -14,6 +13,7 @@ SessionLocal = sessionmaker(
     bind=engine,
 )
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()
