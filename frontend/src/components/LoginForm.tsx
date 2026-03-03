@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie'
 
 const LoginForm = () => {
-
-    const [, setCookies] = useCookies(["access_token"]);
+    const navigate = useNavigate();
+    const [, setCookies] = useCookies(["access"]);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -18,19 +18,15 @@ const LoginForm = () => {
                 scope: "",
                 client_id: "",
                 client_secret: "",
-            }, { 
-                headers: {
-                    accept: "application/json",
-                    "Content-Type": "application/x-www-form-urlencoded",
+            }, { headers: {
+                accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
             }})
             .then((response) => {
                 const token = response.data.access_token;
-                setCookies("access_token", { token });
-            })
-            .catch((err) => {
-                console.log(err);
-        });
-
+                setCookies("access", { token: token, username: username });
+                navigate("/home-page");
+            });
     };
 
     return (

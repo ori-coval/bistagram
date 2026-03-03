@@ -4,24 +4,36 @@ import UploadPostPage from "./components/UploadPostPage";
 import "./App.css";
 import LoginPage from "./components/LoginPage";
 import UserSearchPage from "./components/UserSearchPage";
+import { useCookies } from "react-cookie";
 
 function App() {
+  const [cookies,] = useCookies(["access"]);
 
   const DynamicUserPage = () => {
     let params = useParams();
     return (
-      <UserPage userId={parseInt(params.userId ? params.userId : "")} />
+      <UserPage username={(params.username ? params.username : "")} />
     )
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/user-page/:userId" element={<DynamicUserPage />} />
-        <Route path="/user-search" element={<UserSearchPage />} />
-        <Route path="/upload-post" element={<UploadPostPage />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {cookies.access ?
+          <>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/home-page" element={<UserPage username={cookies.access.username}/>} />
+            <Route path="/user-page/:username" element={<DynamicUserPage />} />
+            <Route path="/user-search" element={<UserSearchPage />} />
+            <Route path="/upload-post" element={<UploadPostPage />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+          </>
+        :
+          <>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </>
+        }
       </Routes>
     </BrowserRouter>
   );
