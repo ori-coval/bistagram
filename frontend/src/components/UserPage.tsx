@@ -3,7 +3,7 @@ import PostScroll from "./PostScroll";
 const UserPage = () => {
   return (
     <div>
-        <PostScroll userId={1} />
+      <PostScroll userId={1} />
     </div>
   );
 };

@@ -1,8 +1,7 @@
-
 export type Post = {
-    id: number;
-    userId: number;
-    date: string;
-    description: string;
-    image: string;
+    ID: number;
+    UserID: number;
+    Date: string;
+    Description: string;
+    images: Array<{ID: number; PostID: number; image: string}>;
 }

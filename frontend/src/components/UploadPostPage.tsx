@@ -3,7 +3,7 @@ import UploadPostForm from "./UploadPostForm";
 const UploadPostPage = () => {
   return (
     <div>
-        <UploadPostForm />
+      <UploadPostForm />
     </div>
   );
 };

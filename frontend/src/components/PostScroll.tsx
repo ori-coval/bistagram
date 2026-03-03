@@ -7,12 +7,12 @@ const PostScroll = ({ userId }: { userId: number }) => {
 
   useEffect(() => {
     axios
-      .get("http://85.65.146.6:9512/user/1/posts")
+      .get(`http://85.65.146.6:9512/user/${userId}/posts`)
       .then((response) => {
         setPosts(response.data);
       })
       .catch((err) => {
-        // error handling
+        console.log(err);
       });
   }, []);
 
@@ -20,7 +20,13 @@ const PostScroll = ({ userId }: { userId: number }) => {
     <div>
       <ul>
         {posts.map((post) => (
-          <li key={post.id}>{post.description}</li>
+          <li key={post.ID}>
+            {post.Date}
+            <br />
+            <img src={post.images[0].image} />
+            <br />
+            {post.Description}
+          </li>
         ))}
       </ul>
     </div>
