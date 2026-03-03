@@ -1,11 +1,11 @@
 import { useCookies } from "react-cookie";
 import PostScroll from "./PostScroll";
 import { useEffect, useState } from "react";
-import type { Post, UserData } from "../types";
+import type { UserData } from "../types";
 import axios from "axios";
 
 const HomePage = () => {
-  const [cookies,] = useCookies(["access"])
+  const [cookies,] = useCookies(["access"]);
   const [userData, setUserData] = useState<UserData>();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const HomePage = () => {
       )
       .then((response) => {
         setUserData(response.data);
-      })
+      });
   }, []);
   
   return (

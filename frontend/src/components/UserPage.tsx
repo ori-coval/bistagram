@@ -1,7 +1,7 @@
 import { useCookies } from "react-cookie";
 import PostScroll from "./PostScroll";
 import { useEffect, useState } from "react";
-import type { Post, UserData } from "../types";
+import type { UserData } from "../types";
 import axios from "axios";
 
 const UserPage = ({ username }: { username: string }) => {
