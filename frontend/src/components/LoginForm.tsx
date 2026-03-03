@@ -1,13 +1,35 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from 'react-cookie'
 
 const LoginForm = () => {
 
+    const [, setCookies] = useCookies(["access_token"]);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const submitLogin = () => {
+        axios
+            .post("http://85.65.146.6:9512/login", {
+                grant_type: "",
+                username: username,
+                password: password,
+                scope: "",
+                client_id: "",
+                client_secret: "",
+            }, { 
+                headers: {
+                    accept: "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+            }})
+            .then((response) => {
+                const token = response.data.access_token;
+                setCookies("access_token", { token });
+            })
+            .catch((err) => {
+                console.log(err);
+        });
 
     };
 
@@ -16,8 +38,8 @@ const LoginForm = () => {
             <label htmlFor="username">Username</label><br />
             <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} /><br />
             <label htmlFor="password">Password</label><br />
-            <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} /><br />
-            <button onClick={submitLogin}>Login</button>
+            <input type="text" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} /><br />
+            <button onClick={submitLogin}>Login</button><br />
         </div>
     );
 };
