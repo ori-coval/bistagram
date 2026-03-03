@@ -20,6 +20,6 @@ services:
     container_name: fastapi-application
     ports:
       - 9512:80
-    restart: "no"
+    restart: "always"
 volumes:
   mysql-test-vol:

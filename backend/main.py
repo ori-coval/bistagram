@@ -8,30 +8,24 @@ from db.database import get_db
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
 
 @app.get("")
 def root():
     return "Hello World"
 
 
-origins = ["http://localhost:3000"]
-
-
 @app.get("/user/{user_id}/posts")
 def posts(response: Response, user_id: int, db: Session = Depends(get_db)):
-    response.headers["Access-Control-Allow-Origin"] = "*"
     return db_handler.get_all_posts_by_user(db, user_id=user_id)
 
 
 @app.post("/upload-post")
-def create(request: db_handler.PostBase, db: Session = Depends(get_db)):
+def create(response: Response, request: db_handler.PostBase, db: Session = Depends(get_db)):
     return db_handler.create_post(db, request)
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
