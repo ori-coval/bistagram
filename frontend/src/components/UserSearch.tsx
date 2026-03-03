@@ -1,13 +1,12 @@
-import { useState } from "react";
-
-
-const UserSearch = () => {
-    const [searchValue, setSearchValue] = useState("");
-
-    const submitSearch = () => {
-
-    };
-
+const UserSearch = ({
+    searchValue,
+    setSearchValue,
+    submitSearch
+}: {
+    searchValue: string,
+    setSearchValue: (arg: string) => void,
+    submitSearch: () => void
+}) => {
     return (
         <div>
             <label htmlFor="search"></label>
