@@ -1,17 +1,28 @@
 import { useRef, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const UploadPostForm = () => {
+  const navigate = useNavigate();
+  const [cookies,] = useCookies(["access"]);
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const imageRef = useRef<HTMLInputElement>(null);
+  
 
   const submitPost = () => {
-    axios.post("http://85.65.146.6:9512/upload-post", {
-      UserID: 1,
-      Description: description,
-      image: image,
-    });
+    axios.
+      post("http://85.65.146.6:9512/upload-post", {
+        Description: description,
+        image: image,
+      }, { headers: {
+        Authorization: `Bearer ${cookies.access.token}`
+      }})
+      .then(() => {
+        navigate("/home-page");
+      })
+    
   };
 
   const loadImage = () => {
