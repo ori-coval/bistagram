@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const UploadPostForm = () => {
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const imageRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const submitPost = () => {
     axios.post("http://85.65.146.6:9512/upload-post", {
@@ -12,6 +14,7 @@ const UploadPostForm = () => {
       Description: description,
       image: image,
     });
+    navigate("/");
   };
 
   const loadImage = () => {
