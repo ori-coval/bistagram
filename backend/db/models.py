@@ -16,6 +16,7 @@ class User(Base):
     ProfileImage: Mapped[str] = mapped_column(String)
 
     posts: Mapped[List["Post"]] = relationship("Post", back_populates="user")
+    likes: Mapped[List["Likes"]] = relationship("Likes", back_populates="LikeUser")
 
 
 class Post(Base):
@@ -30,6 +31,7 @@ class Post(Base):
 
     user: Mapped["User"] = relationship("User", back_populates="posts")
     images: Mapped[List["PostImage"]] = relationship("PostImage", back_populates="post")
+    likes: Mapped[List["Likes"]] = relationship("Likes", back_populates="LikePost")
 
 
 class PostImage(Base):
@@ -40,3 +42,14 @@ class PostImage(Base):
     image: Mapped[str] = mapped_column(String)
 
     post: Mapped["Post"] = relationship("Post", back_populates="images")
+
+
+class Likes(Base):
+    __tablename__ = "Likes"
+
+    ID: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    UserID: Mapped[int] = mapped_column(Integer, ForeignKey("User.ID"))
+    PostID: Mapped[int] = mapped_column(Integer, ForeignKey("Post.ID"))
+
+    LikeUser = relationship("User", back_populates="likes")
+    LikePost = relationship("Post", back_populates="likes")

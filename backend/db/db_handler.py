@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm import joinedload
 from db.schemas import PostBase, UserAuth
-from .models import Post, PostImage, User
+from .models import Likes, Post, PostImage, User
 from sqlalchemy.orm.session import Session
 from auth.hashing import get_password_hash
 from typing import List
@@ -74,13 +74,50 @@ def update_user_bio(db: Session, username: str, new_bio: str) -> User:
     db.refresh(user)
     return user
 
-def update_user_profile_picture(db: Session, username: str, new_profile_picture: str) -> User:
+
+def update_user_profile_picture(
+    db: Session, username: str, new_profile_picture: str
+) -> User:
     user = get_user_by_username(db, username=username)
     user.ProfileImage = new_profile_picture
     db.commit()
     db.refresh(user)
     return user
 
+
 def get_users_by_search_text(db: Session, search_text: str) -> List[User]:
     search_pattern = f"%{search_text}%"
     return db.query(User).filter(User.Username.ilike(search_pattern)).all()
+
+
+def get_post_likes_count(db: Session, post_id: int) -> int:
+    likes = db.query(Post).filter(Post.ID == post_id).first()
+    if not likes:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id {post_id} not found"
+        )
+    return len(likes.likes)
+
+def like_post(db: Session, post_id: int, user_id: int):
+    post = db.query(Post).filter(Post.ID == post_id).first()
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id {post_id} not found"
+        )
+    if any(like.UserID == user_id for like in post.likes):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="User has already liked this post"
+        )
+    new_like = Likes(UserID=user_id, PostID=post_id)
+    db.add(new_like)
+    db.commit()
+
+
+def unlike_post(db: Session, post_id: int, user_id: int):
+    like = db.query(Likes).filter(Likes.PostID == post_id, Likes.UserID == user_id).first()
+    if not like:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="User has not liked this post"
+        )
+    db.delete(like)
+    db.commit()

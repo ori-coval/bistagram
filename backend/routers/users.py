@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 from auth.oauth2 import get_current_user
 from db.models import User
 from routers.posts import get_user_posts
@@ -26,6 +26,7 @@ def search_user(
 ):
     return db_handler.get_users_by_search_text(db, search_text)
 
+
 @router.get("/user/{username}/all")
 def get_user_profile(
     username: str,
@@ -36,12 +37,13 @@ def get_user_profile(
     posts = get_user_posts(username=username, db=db, current_user=current_user)
     return {"user": user, "posts": posts}
 
+
 @router.get("/user/home")
 def get_user_homepage(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_user_posts(
+    return get_user_profile(
         username=current_user.Username, db=db, current_user=current_user
     )
 
