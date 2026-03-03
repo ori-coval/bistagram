@@ -1,9 +1,9 @@
 import PostScroll from "./PostScroll";
 
-const UserPage = () => {
+const UserPage = ({ userId }: { userId: number }) => {
   return (
     <div>
-      <PostScroll userId={1} />
+      <PostScroll userId={userId} />
     </div>
   );
 };
