@@ -28,7 +28,6 @@ services:
     container_name: bistagram-frontend
     ports:
       - "5173:5173"
-    # volumes:
-    #   - .:/app
+    restart: "always"
 volumes:
   mysql-test-vol:
