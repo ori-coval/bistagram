@@ -1,4 +1,4 @@
-FROM python:3.14 as fast
+FROM python:3.14 AS fast
 
 RUN pip3.14 install "fastapi[standard]"
 RUN pip3.14 install fastapi uvicorn sqlalchemy databases pymysql aiomysql cryptography
