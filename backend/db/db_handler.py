@@ -1,11 +1,13 @@
 from datetime import datetime
+from turtle import pos
 from fastapi import HTTPException, status
 from sqlalchemy.orm import joinedload
-from db.schemas import PostBase, UserAuth
+from db.schemas import PostBase
 from .models import Likes, Post, PostImage, User
 from sqlalchemy.orm.session import Session
 from auth.hashing import get_password_hash
 from typing import List
+from sqlalchemy import func
 
 
 def create_post(db: Session, request: PostBase, current_user: User) -> Post:
@@ -29,15 +31,45 @@ def create_post(db: Session, request: PostBase, current_user: User) -> Post:
     db.refresh(new_image)
     return new_post
 
+def get_post_by_id(db: Session, post_id: int) -> Post:
+    post = (
+        db.query(Post)
+        .filter(Post.ID == post_id)
+        .first()
+    )
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
+        )
+    likes_count = len(post.likes)
+    del post.likes
+    post.likes_count = likes_count
+    return post
+
+
+def get_posts_likes(db: Session, post_id: int) -> List[Likes]:
+    post = db.query(Post).filter(Post.ID == post_id).first()
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
+        )
+    return post.likes
+
 
 def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
     user_id = get_user_by_username(db, username=username).ID
-    return (
+    posts = (
         db.query(Post)
-        .options(joinedload(Post.images))
+        .options(joinedload(Post.images), joinedload(Post.likes))
         .filter(Post.UserID == user_id)
         .all()
     )
+    for post in posts:
+        post.likes_count = len(post.likes)
+        del post.likes
+    return posts
 
 
 def get_user_by_username(db: Session, username: str) -> User:
@@ -94,19 +126,23 @@ def get_post_likes_count(db: Session, post_id: int) -> int:
     likes = db.query(Post).filter(Post.ID == post_id).first()
     if not likes:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id {post_id} not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
         )
     return len(likes.likes)
+
 
 def like_post(db: Session, post_id: int, user_id: int):
     post = db.query(Post).filter(Post.ID == post_id).first()
     if not post:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id {post_id} not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
         )
     if any(like.UserID == user_id for like in post.likes):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="User has already liked this post"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User has already liked this post",
         )
     new_like = Likes(UserID=user_id, PostID=post_id)
     db.add(new_like)
@@ -114,10 +150,13 @@ def like_post(db: Session, post_id: int, user_id: int):
 
 
 def unlike_post(db: Session, post_id: int, user_id: int):
-    like = db.query(Likes).filter(Likes.PostID == post_id, Likes.UserID == user_id).first()
+    like = (
+        db.query(Likes).filter(Likes.PostID == post_id, Likes.UserID == user_id).first()
+    )
     if not like:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="User has not liked this post"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User has not liked this post",
         )
     db.delete(like)
     db.commit()

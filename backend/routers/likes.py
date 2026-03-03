@@ -13,6 +13,10 @@ router = APIRouter(tags=["likes"])
 def get_post_likes_count(post_id: int, db: Session = Depends(get_db)):
     return db_handler.get_post_likes_count(db, post_id)
 
+@router.get("/post/{post_id}/likes")
+def get_post_likes(post_id: int, db: Session = Depends(get_db)):
+    return db_handler.get_posts_likes(db, post_id)
+
 @router.post("/post/{post_id}/like")
 def like_post(post_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     db_handler.like_post(db, post_id, current_user.ID)
