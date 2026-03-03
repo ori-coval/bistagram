@@ -20,7 +20,9 @@ const LoginForm = () => {
             }})
             .then((response) => {
                 const token = response.data.access_token;
-                setCookies("access", { token: token });
+                const expires = new Date();
+                expires.setMinutes(expires.getMinutes() + 30);
+                setCookies("access", { token: token, expires: expires.toString() });
                 navigate("/home-page");
             });
     };

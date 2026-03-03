@@ -23,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        {cookies.access ?
+        {(cookies.access && new Date() < new Date(cookies.access.expires) ?
           <>
             <Route path="/" element={<Navigate to="/home-page" replace />} />
             <Route path="/home-page" element={<HomePage />} />
@@ -35,7 +35,7 @@ function App() {
           <>
             <Route path="*" element={<Navigate to="/login" replace />} />
           </>
-        }
+        )}
       </Routes>
     </BrowserRouter>
   );
