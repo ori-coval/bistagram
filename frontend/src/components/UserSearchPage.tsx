@@ -26,7 +26,7 @@ const UserSearchPage = () => {
 
   return (
     <div>
-      <UserSearch searchValue={searchValue} setSearchValue={setSearchValue} submitSearch={submitSearch} />
+      <UserSearch setSearchValue={setSearchValue} submitSearch={submitSearch} />
       <UserScroll users={users}/>
     </div>
   );
