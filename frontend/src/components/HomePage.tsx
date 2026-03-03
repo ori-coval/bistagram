@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import type { Post, UserData } from "../types";
 import axios from "axios";
 
-const UserPage = ({ username }: { username: string }) => {
+const HomePage = () => {
   const [cookies,] = useCookies(["access"])
   const [userData, setUserData] = useState<UserData>();
 
   useEffect(() => {
     axios
-      .get(`http://85.65.146.6:9512/user/${username}/all`,
+      .get(`http://85.65.146.6:9512/user/home`,
         { headers: {
           Authorization: `Bearer ${cookies.access.token}`
         }}
@@ -27,4 +27,4 @@ const UserPage = ({ username }: { username: string }) => {
   );
 };
 
-export default UserPage;
+export default HomePage;

@@ -5,6 +5,8 @@ import "./App.css";
 import LoginPage from "./components/LoginPage";
 import UserSearchPage from "./components/UserSearchPage";
 import { useCookies } from "react-cookie";
+import SignupPage from "./components/SignupPage";
+import HomePage from "./components/HomePage";
 
 function App() {
   const [cookies,] = useCookies(["access"]);
@@ -19,18 +21,18 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         {cookies.access ?
           <>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/home-page" element={<UserPage username={cookies.access.username}/>} />
+            <Route path="/" element={<Navigate to="/home-page" replace />} />
+            <Route path="/home-page" element={<HomePage />} />
             <Route path="/user-page/:username" element={<DynamicUserPage />} />
             <Route path="/user-search" element={<UserSearchPage />} />
             <Route path="/upload-post" element={<UploadPostPage />} />
-            <Route path="/" element={<Navigate to="/login" replace />} />
           </>
         :
           <>
-            <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         }

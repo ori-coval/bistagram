@@ -14,7 +14,6 @@ const UploadPostForm = () => {
   const submitPost = () => {
     axios.
       post("http://85.65.146.6:9512/upload-post", {
-        Username: cookies.access.username,
         Description: description,
         image: image,
       }, { headers: {
