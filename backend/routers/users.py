@@ -38,7 +38,7 @@ def get_user_profile(
     return {"User": user, "Posts": posts}
 
 
-@router.get("/user/profile")
+@router.get("/self/profile")
 def get_user_homepage(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
