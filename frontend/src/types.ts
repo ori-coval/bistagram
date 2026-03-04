@@ -26,7 +26,7 @@ export type ProfilePost = {
 export type ProfileData = {
   User: ProfileUser;
   Posts: ProfilePost[];
-  AlreadyFollowed: boolean;
+  AlreadyFollowing: boolean;
   FollowersCount: number;
   FollowingCount: number;
 };

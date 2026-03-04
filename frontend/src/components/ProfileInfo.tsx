@@ -20,6 +20,7 @@ const ProfileInfo = ({
   onEditAvatar,
   onShowFollowers,
   onShowFollowing,
+  onClickFollow,
 }: {
   profileData: ProfileData;
   isOwnProfile: boolean;
@@ -27,6 +28,7 @@ const ProfileInfo = ({
   onEditAvatar: () => void;
   onShowFollowers: () => void;
   onShowFollowing: () => void;
+  onClickFollow: () => void;
 }) => {
   return (
     <Container maxWidth="md">
@@ -42,17 +44,27 @@ const ProfileInfo = ({
                 </IconButton>
               }
             >
-              <Avatar src={profileData.User.ProfileImage} sx={{ width: 120, height: 120 }}>
+              <Avatar
+                src={profileData.User.ProfileImage}
+                sx={{ width: 120, height: 120 }}
+              >
                 {!profileData.User.ProfileImage ? (
                   <AccountCircleIcon sx={{ fontSize: 60 }} />
-                ) : <></>}
+                ) : (
+                  <></>
+                )}
               </Avatar>
             </Badge>
           ) : (
-            <Avatar src={profileData.User.ProfileImage} sx={{ width: 120, height: 120 }}>
+            <Avatar
+              src={profileData.User.ProfileImage}
+              sx={{ width: 120, height: 120 }}
+            >
               {!profileData.User.ProfileImage ? (
-                  <AccountCircleIcon sx={{ fontSize: 60 }} />
-                ) : <></>}
+                <AccountCircleIcon sx={{ fontSize: 60 }} />
+              ) : (
+                <></>
+              )}
             </Avatar>
           )}
         </Grid>
@@ -87,7 +99,12 @@ const ProfileInfo = ({
             </Stack>
 
             <Box>
-              <Typography variant="body2" whiteSpace="pre-line" maxWidth={300} sx={{ wordWrap: "break-word" }}>
+              <Typography
+                variant="body2"
+                whiteSpace="pre-line"
+                maxWidth={300}
+                sx={{ wordWrap: "break-word" }}
+              >
                 {profileData.User.Bio}
               </Typography>
 
@@ -104,13 +121,21 @@ const ProfileInfo = ({
                 </>
               ) : (
                 <>
-                  <Button>Follow</Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: profileData.AlreadyFollowing
+                        ? "#25292e"
+                        : "#1976d2",
+                    }}
+                    onClick={onClickFollow}
+                  >
+                    {profileData.AlreadyFollowing ? "Following" : "Follow"}
+                  </Button>
                 </>
               )}
             </Box>
-            <Box>
-              
-            </Box>
+            <Box></Box>
           </Stack>
         </Grid>
       </Grid>
