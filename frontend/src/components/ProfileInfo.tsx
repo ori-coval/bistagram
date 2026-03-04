@@ -8,7 +8,6 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
     <Container maxWidth="md">
       <Grid container spacing={4} alignItems="center">
         <Grid size={{ xs: 12, sm: 4 }} display="flex" justifyContent="center">
-          {/* Avatar */}
           {isOwnProfile ? (
             <Badge
               overlap="circular"
@@ -24,21 +23,18 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
               </Avatar>
             </Badge>
           ) : (
-            <Avatar sx={{ width: 120, height: 120 }}>
+            <Avatar src={user.ProfileImage} sx={{ width: 120, height: 120 }}>
               {!user.ProfileImage && <AccountCircleIcon sx={{ fontSize: 60 }} />}
             </Avatar>
           )}
         </Grid>
         
-        {/* Profile Info */}
         <Grid size={{ xs: 12, sm: 8 }}>
           <Stack spacing={2}>
-            {/* Username */}
             <Typography variant="h6" fontWeight={500}>
               {user.Username}
             </Typography>
 
-            {/* Counters */}
             <Stack direction="row" spacing={4}>
               <Box>
                 <Typography fontWeight="bold">
@@ -62,7 +58,6 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
               </Box>
             </Stack>
 
-            {/* Bio */}
             <Box>
               <Typography variant="body2" whiteSpace="pre-line">
                 {user.Bio}

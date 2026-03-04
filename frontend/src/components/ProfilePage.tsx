@@ -42,7 +42,7 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <Stack minHeight="100vh" direction="row" justifyContent="center">
+      <Stack direction="row" justifyContent="center">
         <Stack direction="column">
           <ProfileInfo user={profileData ? profileData.User : {Username: "", ProfileImage: "", Bio: ""}} isOwnProfile onEditBio={f} onEditAvatar={f} onShowFollowers={f} onShowFollowing={f}/>
           <PostGrid posts={profileData ? profileData.Posts : []} openPostDialog={openPostDialog} />
