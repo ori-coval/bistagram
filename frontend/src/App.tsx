@@ -26,7 +26,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         {(cookies.access && new Date() < new Date(cookies.access.expires) ?
           <>
-            <Route path="/" element={<Navigate to="/home-page" replace />} />
+            <Route path="/" element={<Navigate to="/profile-page" replace />} />
             <Route path="/home-page" element={<HomePage />} />
             <Route path="/profile-page" element={<ProfilePage />} />
             <Route path="/user-page/:username" element={<DynamicUserPage />} />
