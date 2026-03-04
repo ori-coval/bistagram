@@ -9,24 +9,24 @@ export type ScrollPost = {
   User: {
     Username: string;
     ProfileImage: string;
-  }
-}
+  };
+};
 
 export type ProfileUser = {
   Username: string;
   ProfileImage: string;
   Bio: string;
-}
+};
 
 export type ProfilePost = {
   ID: number;
   RawImages: string[];
-}
+};
 
 export type ProfileData = {
-  User: ProfileUser
+  User: ProfileUser;
   Posts: ProfilePost[];
-}
+};
 
 export type DialogComment = {
   ID: number;
@@ -36,8 +36,8 @@ export type DialogComment = {
   User: {
     Username: string;
     ProfileImage: string;
-  }
-}
+  };
+};
 
 export type DialogPost = {
   ID: number;
@@ -50,6 +50,15 @@ export type DialogPost = {
   User: {
     Username: string;
     ProfileImage: string;
-  }
+  };
   Comments: DialogComment[];
-}
+};
+
+export type User = {
+  [x: string]: any;
+  ID: number;
+  HashedPassword: string;
+  Username: string;
+  ProfileImage: string;
+  Bio: string;
+};
