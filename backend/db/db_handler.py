@@ -1,9 +1,10 @@
 from datetime import datetime
+from hmac import new
 from turtle import pos
 from fastapi import HTTPException, status
 from sqlalchemy.orm import joinedload
-from db.schemas import PostBase
-from .models import Likes, Post, PostImage, User
+from db.schemas import CommentBase, PostBase, followBase
+from .models import Comments, Likes, Post, PostImage, User, follows
 from sqlalchemy.orm.session import Session
 from auth.hashing import get_password_hash
 from typing import List
@@ -31,12 +32,9 @@ def create_post(db: Session, request: PostBase, current_user: User) -> Post:
     db.refresh(new_image)
     return new_post
 
+
 def get_post_by_id(db: Session, post_id: int) -> Post:
-    post = (
-        db.query(Post)
-        .filter(Post.ID == post_id)
-        .first()
-    )
+    post = db.query(Post).filter(Post.ID == post_id).first()
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -62,13 +60,17 @@ def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
     user_id = get_user_by_username(db, username=username).ID
     posts = (
         db.query(Post)
-        .options(joinedload(Post.images), joinedload(Post.likes))
+        .options(
+            joinedload(Post.images), joinedload(Post.likes), joinedload(Post.comments)
+        )
         .filter(Post.UserID == user_id)
         .all()
     )
     for post in posts:
         post.likes_count = len(post.likes)
+        post.comments_count = len(post.comments)
         del post.likes
+        del post.comments
     return posts
 
 
@@ -160,3 +162,101 @@ def unlike_post(db: Session, post_id: int, user_id: int):
         )
     db.delete(like)
     db.commit()
+
+
+def get_post_comments(db: Session, post_id: int):
+    post = db.query(Post).filter(Post.ID == post_id).first()
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
+        )
+    return post.comments
+
+
+def create_comment(db: Session, request: CommentBase, current_user: User) -> Comments:
+    comment = Comments(
+        PostID=request.PostID,
+        ParentCommentID=request.ParentCommentID,
+        CommenterID=current_user.ID,
+        Date=datetime.now(),
+        Comment=request.Comment,
+    )
+
+    db.add(comment)
+    db.commit()
+    db.refresh(comment)
+    return comment
+
+
+def follow_user(db: Session, request: followBase, current_user: User):
+    if not does_user_exist(db, request.Username):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with username {request.Username} not found",
+        )
+    if request.Username == current_user.Username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot follow yourself",
+        )
+    if (
+        db.query(follows)
+        .filter(
+            follows.FollowerID == current_user.ID,
+            follows.FollowedID == get_user_by_username(db, request.Username).ID,
+        )
+        .first()
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"You are already following {request.Username}",
+        )
+
+    new_follow = follows(
+        FollowerID=current_user.ID,
+        FollowedID=get_user_by_username(db, request.Username).ID,
+    )
+    db.add(new_follow)
+    db.commit()
+    return {"message": f"You are now following {request.Username}"}
+
+
+def unfollow_user(db: Session, request: followBase, current_user: User):
+    follow = (
+        db.query(follows)
+        .filter(
+            follows.FollowerID == current_user.ID,
+            follows.FollowedID == get_user_by_username(db, request.Username).ID,
+        )
+        .first()
+    )
+    if not follow:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"You are not following {request.Username}",
+        )
+    db.delete(follow)
+    db.commit()
+    return {"message": f"You have unfollowed {request.Username}"}
+
+
+def get_user_followers(db: Session, username: str):
+    user = get_user_by_username(db, username=username)
+    followers = (
+        db.query(User)
+        .join(follows, follows.FollowerID == User.ID)
+        .filter(follows.FollowedID == user.ID)
+        .all()
+    )
+    return followers
+
+
+def get_followers_count(db: Session, username: str) -> int:
+    user = get_user_by_username(db, username=username)
+    followers_count = (
+        db.query(func.count(follows.FollowerID))
+        .filter(follows.FollowedID == user.ID)
+        .scalar()
+    )
+    return followers_count
