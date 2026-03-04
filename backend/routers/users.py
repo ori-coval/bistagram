@@ -36,7 +36,13 @@ def get_user_profile(
     user = db_handler.get_user_by_username(db, username=username)
     posts = get_user_posts(username=username, db=db, current_user=current_user)
     already_following = db_handler.is_following(db, username, current_user)
-    return {"User": user, "Posts": posts, "AlreadyFollowing": already_following}
+    return {
+        "User": user,
+        "Posts": posts,
+        "AlreadyFollowing": already_following,
+        "FollowersCount": db_handler.get_followers_count(db, username),
+        "FollowingCount": db_handler.get_following_count(db, username),
+    }
 
 
 @router.get("/self/profile")

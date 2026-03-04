@@ -280,6 +280,15 @@ def get_followers_count(db: Session, username: str) -> int:
     return followers_count
 
 
+def get_following_count(db: Session, username: str) -> int:
+    user = get_user_by_username(db, username=username)
+    following_count = (
+        db.query(func.count(follows.FollowedID))
+        .filter(follows.FollowerID == user.ID)
+        .scalar()
+    )
+    return following_count
+
 def get_post_display(db: Session, post_id: int):
     post = (
         db.query(Post)
