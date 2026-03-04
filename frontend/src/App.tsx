@@ -8,6 +8,7 @@ import { useCookies } from "react-cookie";
 import SignupPage from "./components/SignupPage";
 import ProfilePage from "./components/ProfilePage";
 import HomePage from "./components/HomePage";
+import CustomizedDialogs from "./components/PostDialog";
 
 function App() {
   const [cookies,] = useCookies(["access"]);
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/test" element={<CustomizedDialogs />} />
         {(cookies.access && new Date() < new Date(cookies.access.expires) ?
           <>
             <Route path="/" element={<Navigate to="/profile-page" replace />} />
