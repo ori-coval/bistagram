@@ -272,7 +272,7 @@ def get_post_display(db: Session, post_id: int):
     post = (
         db.query(Post)
         .options(
-            joinedload(Post.Images), joinedload(Post.User), joinedload(Post.Comments)
+            joinedload(Post.Images), joinedload(Post.User), joinedload(Post.Comments).joinedload(Comments.CommentUser)
         )
         .filter(Post.ID == post_id)
         .first()
@@ -288,8 +288,8 @@ def get_post_display(db: Session, post_id: int):
         
     del post.Images
     post.RawImages = Images
-    post.already_liked = any(like.UserID == post.User.ID for like in post.Likes)
-    post.comments_count = len(post.Comments)
-    post.likes_count = len(post.Likes)
+    post.AlreadyLiked = any(like.UserID == post.User.ID for like in post.Likes)
+    post.CommentsCount = len(post.Comments)
+    post.LikesCount = len(post.Likes)
     del post.Likes
     return post

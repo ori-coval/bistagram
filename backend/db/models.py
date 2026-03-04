@@ -17,7 +17,7 @@ class User(Base):
 
     Posts: Mapped[List["Post"]] = relationship("Post", back_populates="User")
     Likes: Mapped[List["Likes"]] = relationship("Likes", back_populates="LikeUser")
-    Comments: Mapped[List["Comments"]] = relationship(
+    UserComments: Mapped[List["Comments"]] = relationship(
         "Comments", back_populates="CommentUser"
     )
 
@@ -72,8 +72,7 @@ class Comments(Base):
     CommenterID: Mapped[int] = mapped_column(Integer, ForeignKey("User.ID"))
     Date: Mapped[DateTime] = mapped_column(DateTime)
     Comment: Mapped[str] = mapped_column(String)
-
-    CommentUser = relationship("User", back_populates="Comments")
+    CommentUser = relationship("User", back_populates="UserComments")
     CommentPost = relationship("Post", back_populates="Comments")
     ParentCommenter = relationship("Comments", remote_side=[ID], backref="Replies")
 
