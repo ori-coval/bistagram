@@ -3,14 +3,16 @@ import PostGrid from "./PostGrid";
 import { useEffect, useState } from "react";
 import type { DialogPost, ProfileData } from "../types";
 import axios from "axios";
-import { Stack } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import ProfileInfo from "./ProfileInfo";
 import PostDialog from "./PostDialog";
+import EditBioDialog from "./EditBioDialog";
 
 const ProfilePage = () => {
   const [cookies,] = useCookies(["access"]);
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
+  const [editBioDialogOpen, setEditBioDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
 
   useEffect(() => {
@@ -37,6 +39,31 @@ const ProfilePage = () => {
         setPostDialogOpen(true);
       });
   };
+
+  const openEditBioDialog = () => {
+    
+    setEditBioDialogOpen(true);
+  }
+
+  const closeEditBioDialog = () => {
+    setEditBioDialogOpen(false);
+  }
+
+  const updateBio = (newBio: string) => {
+    axios
+      .post("http://85.65.146.6:9512/user/edit-profile-bio", { Bio: newBio },
+        { headers: {
+          Authorization: `Bearer ${cookies.access.token}` }
+        }
+      );
+    setProfileData((oldProfileData) => {
+      let newProfileData = oldProfileData;
+      if (newProfileData) {
+        newProfileData.User.Bio = newBio;
+      }
+      return newProfileData;
+    });
+  }
   
   const f = () => {};
 
@@ -44,11 +71,12 @@ const ProfilePage = () => {
     <div>
       <Stack direction="row" justifyContent="center">
         <Stack direction="column">
-          <ProfileInfo user={profileData ? profileData.User : {Username: "", ProfileImage: "", Bio: ""}} isOwnProfile onEditBio={f} onEditAvatar={f} onShowFollowers={f} onShowFollowing={f}/>
+          <ProfileInfo profileData={profileData ? profileData : { User: { Username: "", Bio: "", ProfileImage: "" }, Posts: [], AlreadyFollowed: false, FollowersCount: 0, FollowingCount: 0}} isOwnProfile onEditBio={openEditBioDialog} onEditAvatar={f} onShowFollowers={f} onShowFollowing={f}/>
           <PostGrid posts={profileData ? profileData.Posts : []} openPostDialog={openPostDialog} />
         </Stack>
       </Stack>
       <PostDialog dialogPost={dialogPost ? dialogPost : { ID: 0, Description: "", Date: "", LikesCount: 0, CommentsCount: 0, AlreadyLiked: false, RawImages: [], User: {Username: "", ProfileImage: ""}, Comments: []}} open={postDialogOpen} onClose={() => {setPostDialogOpen(false)}}/>
+      <EditBioDialog open={editBioDialogOpen} onClose={closeEditBioDialog} currentBio={profileData ? profileData.User.Bio : ""} updateBio={updateBio}/>
     </div>
   );
 };

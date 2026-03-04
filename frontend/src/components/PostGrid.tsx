@@ -3,9 +3,9 @@ import { ImageList, ImageListItem } from "@mui/material";
 
 const PostGrid = ({ posts, openPostDialog }: { posts: ProfilePost[], openPostDialog: (arg: number) => void }) => {
   return (
-    <ImageList cols={3} rowHeight={400}>
+    <ImageList cols={5} rowHeight={400}>
       {posts.map((post) => (
-        <ImageListItem key={post.ID} sx={{ width: 300, objectFit: "cover" }}>
+        <ImageListItem key={post.ID} sx={{ width: 320, objectFit: "cover" }}>
           <img
             src={post.RawImages[0]}
             onClick={() => { openPostDialog(post.ID) }}

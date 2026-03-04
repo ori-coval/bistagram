@@ -1,9 +1,33 @@
-import type { ProfileUser } from "../types";
-import { Avatar, Badge, IconButton, Container, Grid, Stack, Box, Button, Typography} from "@mui/material";
+import type { ProfileData } from "../types";
+import {
+  Avatar,
+  Badge,
+  IconButton,
+  Container,
+  Grid,
+  Stack,
+  Box,
+  Button,
+  Typography,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollowers, onShowFollowing }: { user: ProfileUser, isOwnProfile: boolean, onEditBio: () => void, onEditAvatar: () => void, onShowFollowers: () => void, onShowFollowing: () => void }) => {
+const ProfileInfo = ({
+  profileData,
+  isOwnProfile,
+  onEditBio,
+  onEditAvatar,
+  onShowFollowers,
+  onShowFollowing,
+}: {
+  profileData: ProfileData;
+  isOwnProfile: boolean;
+  onEditBio: () => void;
+  onEditAvatar: () => void;
+  onShowFollowers: () => void;
+  onShowFollowing: () => void;
+}) => {
   return (
     <Container maxWidth="md">
       <Grid container spacing={4} alignItems="center">
@@ -18,41 +42,45 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
                 </IconButton>
               }
             >
-              <Avatar src={user.ProfileImage} sx={{ width: 120, height: 120 }}>
-              {!user.ProfileImage && <AccountCircleIcon sx={{ fontSize: 60 }} />}
+              <Avatar src={profileData.User.ProfileImage} sx={{ width: 120, height: 120 }}>
+                {!profileData.User.ProfileImage ? (
+                  <AccountCircleIcon sx={{ fontSize: 60 }} />
+                ) : <></>}
               </Avatar>
             </Badge>
           ) : (
-            <Avatar src={user.ProfileImage} sx={{ width: 120, height: 120 }}>
-              {!user.ProfileImage && <AccountCircleIcon sx={{ fontSize: 60 }} />}
+            <Avatar src={profileData.User.ProfileImage} sx={{ width: 120, height: 120 }}>
+              {!profileData.User.ProfileImage ? (
+                  <AccountCircleIcon sx={{ fontSize: 60 }} />
+                ) : <></>}
             </Avatar>
           )}
         </Grid>
-        
+
         <Grid size={{ xs: 12, sm: 8 }}>
           <Stack spacing={2}>
             <Typography variant="h6" fontWeight={500}>
-              {user.Username}
+              {profileData.User.Username}
             </Typography>
 
             <Stack direction="row" spacing={4}>
               <Box>
                 <Typography fontWeight="bold">
-                  {21} /*TODO: user.Posts.length*/
+                  {profileData.Posts.length}
                 </Typography>
                 <Typography variant="body2">Posts</Typography>
               </Box>
 
               <Box sx={{ cursor: "pointer" }} onClick={onShowFollowers}>
                 <Typography fontWeight="bold">
-                  {405} /*TODO: user.Followers.length*/
+                  {profileData.FollowersCount}
                 </Typography>
                 <Typography variant="body2">Followers</Typography>
               </Box>
 
               <Box sx={{ cursor: "pointer" }} onClick={onShowFollowing}>
                 <Typography fontWeight="bold">
-                  {512}  /*TODO: user.Following.length*/
+                  {profileData.FollowingCount}
                 </Typography>
                 <Typography variant="body2">Following</Typography>
               </Box>
@@ -60,10 +88,10 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
 
             <Box>
               <Typography variant="body2" whiteSpace="pre-line">
-                {user.Bio}
+                {profileData.User.Bio}
               </Typography>
 
-              {isOwnProfile && (
+              {isOwnProfile ? (
                 <Button
                   variant="text"
                   size="small"
@@ -72,6 +100,8 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
                 >
                   Edit Bio
                 </Button>
+              ) : (
+                <></>
               )}
             </Box>
           </Stack>
@@ -79,5 +109,5 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
       </Grid>
     </Container>
   );
-}
+};
 export default ProfileInfo;

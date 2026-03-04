@@ -26,6 +26,9 @@ export type ProfilePost = {
 export type ProfileData = {
   User: ProfileUser;
   Posts: ProfilePost[];
+  AlreadyFollowed: boolean;
+  FollowersCount: number;
+  FollowingCount: number;
 };
 
 export type DialogComment = {
