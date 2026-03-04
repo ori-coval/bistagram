@@ -67,6 +67,12 @@ def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
         .all()
     )
     for post in posts:
+        Images = []
+        for image in post.Images:
+            Images.append(image.Image)
+            
+        del post.Images
+        post.RawImages = Images
         post.likes_count = len(post.Likes)
         post.comments_count = len(post.Comments)
         del post.Likes
@@ -276,6 +282,12 @@ def get_post_display(db: Session, post_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
+    Images = []
+    for image in post.Images:
+        Images.append(image.Image)
+        
+    del post.Images
+    post.RawImages = Images
     post.already_liked = any(like.UserID == post.User.ID for like in post.Likes)
     post.comments_count = len(post.Comments)
     post.likes_count = len(post.Likes)
