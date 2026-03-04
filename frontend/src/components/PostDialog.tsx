@@ -1,29 +1,16 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Grid } from "@mui/material";
 import type { DialogPost } from "../types";
-import CommentsDisplay from "./Comment";
+import CommentsDisplay from "./CommentsDisplay";
 
-const PostDialogComponent = ({ dialogPost }: { dialogPost: DialogPost }) => {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+const PostDialog = ({ dialogPost, open, onClose }: { dialogPost: DialogPost; open: boolean; onClose: () => void }) => {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button>
       <Dialog
-        onClose={handleClose}
+        onClose={onClose}
         open={open}
         maxWidth={"md"}
         PaperProps={{ sx: { height: "90%", overflow: "hidden", maxWidth: "90%", width: "90%" } }}
@@ -39,11 +26,11 @@ const PostDialogComponent = ({ dialogPost }: { dialogPost: DialogPost }) => {
             width={"70%"}
             style={{maxHeight: "90%"}}
           />
-          <CommentsDisplay dialogPost={dialogPost} />
+          <CommentsDisplay comments={dialogPost.Comments} />
         </Grid>
         <IconButton
           aria-label="close"
-          onClick={handleClose}
+          onClick={onClose}
           sx={() => ({
             position: "fixed",
             right: 8,
@@ -59,4 +46,4 @@ const PostDialogComponent = ({ dialogPost }: { dialogPost: DialogPost }) => {
   );
 };
 
-export default PostDialogComponent;
+export default PostDialog;

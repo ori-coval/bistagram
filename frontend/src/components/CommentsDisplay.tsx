@@ -5,9 +5,9 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
-import type { DialogPost } from "../types";
+import type { DialogComment } from "../types";
 
-const CommentsDisplay = ({dialogPost}: { dialogPost : DialogPost}) =>{
+const CommentsDisplay = ({comments}: { comments : DialogComment[]}) =>{
   return (
     <List
       sx={{
@@ -20,15 +20,15 @@ const CommentsDisplay = ({dialogPost}: { dialogPost : DialogPost}) =>{
         backgroundColor: "#212328",
       }}
     >
-      {dialogPost.Comments.map((item, index) => (
-        <ListItem key={index} alignItems="flex-start">
+      {comments.map((comment) => (
+        <ListItem key={comment.ID} alignItems="flex-start">
           <ListItemAvatar>
-            <Avatar src={item.User.ProfileImage} />
+            <Avatar src={comment.User.ProfileImage} />
           </ListItemAvatar>
 
           <ListItemText
-            primary={item.User.Username}
-            secondary={item.Comment}
+            primary={comment.User.Username}
+            secondary={comment.Comment}
             sx={{ color: "white" }}
           />
         </ListItem>

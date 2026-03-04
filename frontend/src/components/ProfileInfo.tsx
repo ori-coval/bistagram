@@ -19,7 +19,7 @@ const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollow
                 </IconButton>
               }
             >
-              <Avatar sx={{ width: 120, height: 120 }}>
+              <Avatar src={user.ProfileImage} sx={{ width: 120, height: 120 }}>
               {!user.ProfileImage && <AccountCircleIcon sx={{ fontSize: 60 }} />}
               </Avatar>
             </Badge>

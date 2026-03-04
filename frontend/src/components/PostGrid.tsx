@@ -1,14 +1,14 @@
 import type { ProfilePost } from "../types";
 import { ImageList, ImageListItem } from "@mui/material";
 
-const PostGrid = ({ posts }: { posts: ProfilePost[] }) => {
+const PostGrid = ({ posts, openPostDialog }: { posts: ProfilePost[], openPostDialog: (arg: number) => void }) => {
   return (
     <ImageList cols={3} rowHeight={400}>
       {posts.map((post) => (
-        <ImageListItem key={post.ID}>
+        <ImageListItem key={post.ID} sx={{ width: 300, objectFit: "cover" }}>
           <img
             src={post.RawImages[0]}
-            style={{ width: 300, objectFit: "cover" }}
+            onClick={() => { openPostDialog(post.ID) }}
           />
         </ImageListItem>
       ))}

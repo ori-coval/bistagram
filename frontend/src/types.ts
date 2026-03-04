@@ -28,6 +28,17 @@ export type ProfileData = {
   Posts: ProfilePost[];
 }
 
+export type DialogComment = {
+  ID: number;
+  ParentCommentID: number;
+  Date: string;
+  Comment: string;
+  User: {
+    Username: string;
+    ProfileImage: string;
+  }
+}
+
 export type DialogPost = {
   ID: number;
   Date: string;
@@ -40,14 +51,5 @@ export type DialogPost = {
     Username: string;
     ProfileImage: string;
   }
-  Comments: Array<{
-    ID: number;
-    ParentCommentID: number;
-    Date: string;
-    Comment: string;
-    User: {
-      Username: string;
-      ProfileImage: string;
-    }
-  }>
+  Comments: DialogComment[];
 }

@@ -1,13 +1,16 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 const NavigationMenu = () => {
   const [value, setValue] = React.useState(0);
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ width: 500 }}>
@@ -18,9 +21,10 @@ const NavigationMenu = () => {
           setValue(newValue);
         }}
       >
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+        <BottomNavigationAction label="Home" icon={<HomeRoundedIcon />} onClick={() => {navigate("/home-page");}} />
+        <BottomNavigationAction label="Add" icon={<AddRoundedIcon />} onClick={() => {navigate("/upload-post");}} />
+        <BottomNavigationAction label="Search" icon={<SearchRoundedIcon />} onClick={() => {navigate("/user-search");}} />
+        <BottomNavigationAction label="Profile" icon={<PersonRoundedIcon />} onClick={() => {navigate("/profile-page");}} />
       </BottomNavigation>
     </Box>
   );
