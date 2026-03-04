@@ -4,16 +4,31 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Grid } from "@mui/material";
 import type { DialogPost } from "../types";
 import CommentsDisplay from "./CommentsDisplay";
+import { Style } from "@mui/icons-material";
 
-const PostDialog = ({ dialogPost, open, onClose }: { dialogPost: DialogPost; open: boolean; onClose: () => void }) => {
-
+const PostDialog = ({
+  dialogPost,
+  open,
+  onClose,
+}: {
+  dialogPost: DialogPost;
+  open: boolean;
+  onClose: () => void;
+}) => {
   return (
     <div>
       <Dialog
         onClose={onClose}
         open={open}
         maxWidth={"md"}
-        PaperProps={{ sx: { height: "90%", overflow: "hidden", maxWidth: "90%", width: "90%" } }}
+        PaperProps={{
+          sx: {
+            height: "90%",
+            overflow: "hidden",
+            maxWidth: "90%",
+            width: "90%",
+          },
+        }}
       >
         <Grid
           container
@@ -22,9 +37,12 @@ const PostDialog = ({ dialogPost, open, onClose }: { dialogPost: DialogPost; ope
           style={{ backgroundColor: "#212328", height: "100%" }}
         >
           <img
-          src={dialogPost.RawImages[0]}
-            width={"70%"}
-            style={{maxHeight: "90%"}}
+            src={dialogPost.RawImages[0]}
+            style={{
+              maxHeight: "90%",
+              width: "70%",
+              objectFit: "contain",
+            }}
           />
           <CommentsDisplay comments={dialogPost.Comments} />
         </Grid>
