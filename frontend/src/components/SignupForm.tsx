@@ -1,3 +1,6 @@
+import { Button, Stack, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 const SignupForm = ({
     setUsername,
     setPassword,
@@ -7,14 +10,14 @@ const SignupForm = ({
     setPassword: (arg: string) => void;
     submitSignup: () => void;
 }) => {
+    const navigate = useNavigate();
     return (
-        <div>
-            <label htmlFor="username">Username</label><br />
-            <input type="text" id="username" name="username" onChange={(e) => setUsername(e.target.value)} /><br />
-            <label htmlFor="password">Password</label><br />
-            <input type="password" id="password" name="password" onChange={(e) => setPassword(e.target.value)} /><br />
-            <button onClick={submitSignup}>Signup</button>
-        </div>
+        <Stack direction="column">
+            <TextField label="Username" variant="outlined" onChange={(e) => setUsername(e.target.value)}/>
+            <TextField label="Password" variant="outlined" onChange={(e) => setPassword(e.target.value)}/>
+            <Button variant="contained" onClick={submitSignup}>Signup</Button>
+            <Button variant="text" onClick={() => { navigate("/login") }}>Already have an account?</Button>
+        </Stack>
     );
 };
 

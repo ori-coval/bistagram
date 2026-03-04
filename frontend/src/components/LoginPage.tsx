@@ -3,6 +3,7 @@ import LoginForm from "./LoginForm";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { Stack } from "@mui/material";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -35,9 +36,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
+    <Stack direction="row" justifyContent="center" alignItems="center" sx={{ minHeight: "97vh" }}>
       <LoginForm setUsername={setUsername} setPassword={setPassword} submitLogin={submitLogin} />
-    </div>
+    </Stack>
   );
 };
 

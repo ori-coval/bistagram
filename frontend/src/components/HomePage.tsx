@@ -11,7 +11,7 @@ const HomePage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://85.65.146.6:9512/self/profile`,
+      .get(`http://85.65.146.6:9512/self/home/posts`,
         { headers: {
           Authorization: `Bearer ${cookies.access.token}`
         }}

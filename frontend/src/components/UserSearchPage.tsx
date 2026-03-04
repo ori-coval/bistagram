@@ -11,6 +11,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
 import type { User } from "../types";
+import { useNavigate } from "react-router-dom";
 
 const filter = createFilterOptions<User>();
 
@@ -40,7 +41,8 @@ function Highlight({
   );
 }
 
-const UserSearchPage: React.FC = () => {
+const UserSearchPage = () => {
+  const navigate = useNavigate();
   const [cookies] = useCookies(["access"]);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [options, setOptions] = useState<readonly User[]>([]);
@@ -77,6 +79,7 @@ const UserSearchPage: React.FC = () => {
       }}
     >
       <Autocomplete
+        onChange={(_, chosenUser) => navigate(`/profile-page/${chosenUser ? chosenUser.Username : ""}`)}
         open={searchBarOpen}
         onOpen={() => setSearchBarOpen(true)}
         onClose={() => setSearchBarOpen(false)}

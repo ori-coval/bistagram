@@ -3,12 +3,12 @@ import PostGrid from "./PostGrid";
 import { useEffect, useState } from "react";
 import type { DialogPost, ProfileData } from "../types";
 import axios from "axios";
-import { Container, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import ProfileInfo from "./ProfileInfo";
 import PostDialog from "./PostDialog";
 import EditBioDialog from "./EditBioDialog";
 
-const ProfilePage = () => {
+const ProfilePage = ({ username }: { username: string }) => {
   const [cookies,] = useCookies(["access"]);
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
@@ -17,7 +17,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://85.65.146.6:9512/self/profile`,
+      .get(`http://85.65.146.6:9512/${username === "" ? "self" : `user/${username}`}/profile`,
         { headers: {
           Authorization: `Bearer ${cookies.access.token}`
         }}
@@ -71,7 +71,7 @@ const ProfilePage = () => {
     <div>
       <Stack direction="row" justifyContent="center">
         <Stack direction="column">
-          <ProfileInfo profileData={profileData ? profileData : { User: { Username: "", Bio: "", ProfileImage: "" }, Posts: [], AlreadyFollowed: false, FollowersCount: 0, FollowingCount: 0}} isOwnProfile onEditBio={openEditBioDialog} onEditAvatar={f} onShowFollowers={f} onShowFollowing={f}/>
+          <ProfileInfo profileData={profileData ? profileData : { User: { Username: "", Bio: "", ProfileImage: "" }, Posts: [], AlreadyFollowed: false, FollowersCount: 0, FollowingCount: 0}} isOwnProfile={(username === "")} onEditBio={openEditBioDialog} onEditAvatar={f} onShowFollowers={f} onShowFollowing={f}/>
           <PostGrid posts={profileData ? profileData.Posts : []} openPostDialog={openPostDialog} />
         </Stack>
       </Stack>

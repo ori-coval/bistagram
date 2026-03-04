@@ -87,22 +87,29 @@ const ProfileInfo = ({
             </Stack>
 
             <Box>
-              <Typography variant="body2" whiteSpace="pre-line">
+              <Typography variant="body2" whiteSpace="pre-line" maxWidth={300} sx={{ wordWrap: "break-word" }}>
                 {profileData.User.Bio}
               </Typography>
 
               {isOwnProfile ? (
-                <Button
-                  variant="text"
-                  size="small"
-                  sx={{ mt: 1 }}
-                  onClick={onEditBio}
-                >
-                  Edit Bio
-                </Button>
+                <>
+                  <Button
+                    variant="text"
+                    size="small"
+                    sx={{ mt: 1 }}
+                    onClick={onEditBio}
+                  >
+                    Edit Bio
+                  </Button>
+                </>
               ) : (
-                <></>
+                <>
+                  <Button>Follow</Button>
+                </>
               )}
+            </Box>
+            <Box>
+              
             </Box>
           </Stack>
         </Grid>

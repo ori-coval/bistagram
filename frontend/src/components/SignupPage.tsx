@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SignupForm from "./SignupForm";
+import { Stack } from "@mui/material";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -9,6 +10,9 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
 
   const submitSignup = () => {
+    if (username.includes(" ") || password.includes(" ") || username.length === 0 || password.length === 0) {
+      return;
+    }
     axios
       .post(
         "http://85.65.146.6:9512/signup",
@@ -28,9 +32,9 @@ const SignupPage = () => {
       });
   };
   return (
-    <div>
+    <Stack direction="row" justifyContent="center" alignItems="center" sx={{ minHeight: "97vh" }}>
       <SignupForm setUsername={setUsername} setPassword={setPassword} submitSignup={submitSignup} />
-    </div>
+    </Stack>
   );
 };
 
