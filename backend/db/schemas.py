@@ -22,3 +22,13 @@ class ProfilePicture(BaseModel):
 
 class ProfileBio(BaseModel):
     text: str
+
+
+class CommentBase(BaseModel):
+    PostID: int
+    Comment: str
+    ParentCommentID: int | None = None
+
+
+class followBase(BaseModel):
+    Username: str
