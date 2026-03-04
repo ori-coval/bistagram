@@ -8,6 +8,7 @@ import { useCookies } from "react-cookie";
 import SignupPage from "./components/SignupPage";
 import ProfilePage from "./components/ProfilePage";
 import HomePage from "./components/HomePage";
+import Layout from "./components/Layout";
 
 function App() {
   const [cookies,] = useCookies(["access"]);
@@ -26,12 +27,14 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         {(cookies.access && new Date() < new Date(cookies.access.expires) ?
           <>
-            <Route path="/" element={<Navigate to="/profile-page" replace />} />
-            <Route path="/home-page" element={<HomePage />} />
-            <Route path="/profile-page" element={<ProfilePage />} />
-            <Route path="/user-page/:username" element={<DynamicUserPage />} />
-            <Route path="/user-search" element={<UserSearchPage />} />
-            <Route path="/upload-post" element={<UploadPostPage />} />
+            <Route element={<Layout />}>
+              <Route path="/" element={<Navigate to="/profile-page" replace />} />
+              <Route path="/home-page" element={<HomePage />} />
+              <Route path="/profile-page" element={<ProfilePage />} />
+              <Route path="/user-page/:username" element={<DynamicUserPage />} />
+              <Route path="/user-search" element={<UserSearchPage />} />
+              <Route path="/upload-post" element={<UploadPostPage />} />
+            </Route>
           </>
         :
           <>

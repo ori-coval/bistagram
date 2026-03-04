@@ -23,11 +23,11 @@ const CommentsDisplay = ({comments}: { comments : DialogComment[]}) =>{
       {comments.map((comment) => (
         <ListItem key={comment.ID} alignItems="flex-start">
           <ListItemAvatar>
-            <Avatar src={comment.User.ProfileImage} />
+            <Avatar src={comment.CommentUser.ProfileImage} />
           </ListItemAvatar>
 
           <ListItemText
-            primary={comment.User.Username}
+            primary={comment.CommentUser.Username}
             secondary={comment.Comment}
             sx={{ color: "white" }}
           />

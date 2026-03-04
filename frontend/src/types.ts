@@ -33,7 +33,7 @@ export type DialogComment = {
   ParentCommentID: number;
   Date: string;
   Comment: string;
-  User: {
+  CommentUser: {
     Username: string;
     ProfileImage: string;
   };
@@ -52,13 +52,12 @@ export type DialogPost = {
     ProfileImage: string;
   };
   Comments: DialogComment[];
-};
+}
 
 export type User = {
-  [x: string]: any;
   ID: number;
-  HashedPassword: string;
   Username: string;
   ProfileImage: string;
   Bio: string;
-};
+}
+
