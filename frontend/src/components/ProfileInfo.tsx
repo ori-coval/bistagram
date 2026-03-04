@@ -1,9 +1,9 @@
-import type { User } from "../types";
+import type { ProfileUser } from "../types";
 import { Avatar, Badge, IconButton, Container, Grid, Stack, Box, Button, Typography} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollowers, onShowFollowing }: { user: User, isOwnProfile: boolean, onEditBio: () => void, onEditAvatar: () => void, onShowFollowers: () => void, onShowFollowing: () => void }) => {
+const ProfileInfo = ({ user, isOwnProfile, onEditBio, onEditAvatar, onShowFollowers, onShowFollowing }: { user: ProfileUser, isOwnProfile: boolean, onEditBio: () => void, onEditAvatar: () => void, onShowFollowers: () => void, onShowFollowing: () => void }) => {
   return (
     <Container maxWidth="md">
       <Grid container spacing={4} alignItems="center">

@@ -11,13 +11,13 @@ const HomePage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://85.65.146.6:9512/self/home/posts`,
+      .get(`http://85.65.146.6:9512/self/profile`,
         { headers: {
           Authorization: `Bearer ${cookies.access.token}`
         }}
       )
       .then((response) => {
-        setPosts(response.data);
+        setPosts(response.data.Posts);
       });
   }, []);
   

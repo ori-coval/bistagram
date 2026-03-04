@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { ProfileData } from "../types";
 import axios from "axios";
 import { Stack } from "@mui/material";
+import ProfileInfo from "./ProfileInfo";
 
 const ProfilePage = () => {
   const [cookies,] = useCookies(["access"]);
@@ -21,9 +22,12 @@ const ProfilePage = () => {
       });
   }, []);
   
+  const f = () => {};
+
   return (
     <Stack minHeight="100vh" direction="row" justifyContent="center">
       <Stack direction="column">
+        <ProfileInfo user={profileData ? profileData.User : {Username: "", ProfileImage: "", Bio: ""}} isOwnProfile onEditBio={f} onEditAvatar={f} onShowFollowers={f} onShowFollowing={f}/>
         <PostGrid posts={profileData ? profileData.Posts : []} />
       </Stack>
     </Stack>

@@ -1,32 +1,3 @@
-export type Post = {
-  ID: number;
-  UserID: number;
-  Date: string;
-  Description: string;
-  Images: Image[];
-  Likes: number;
-  Comments: number;
-};
-
-export type User = {
-  ID: number;
-  HashedPassword: string;
-  Username: string;
-  ProfileImage: string;
-  Bio: string;
-};
-
-export type Image = {
-  ID: number;
-  PostID: number;
-  Image: string;
-}
-
-export type UserData = {
-  user: User;
-  posts: Post[];
-}
-
 export type ScrollPost = {
   ID: number;
   Date: string;
@@ -41,17 +12,19 @@ export type ScrollPost = {
   }
 }
 
+export type ProfileUser = {
+  Username: string;
+  ProfileImage: string;
+  Bio: string;
+}
+
 export type ProfilePost = {
   ID: number;
-  Images: string[];
+  RawImages: string[];
 }
 
 export type ProfileData = {
-  User: {
-    Username: string;
-    ProfileImage: string;
-    Bio: string;
-  }
+  User: ProfileUser
   Posts: ProfilePost[];
 }
 
@@ -62,7 +35,7 @@ export type DialogPost = {
   LikesCount: number;
   CommentsCount: number;
   AlreadyLiked: boolean;
-  Images: string[];
+  RawImages: string[];
   User: {
     Username: string;
     ProfileImage: string;

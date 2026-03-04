@@ -7,10 +7,9 @@ const PostGrid = ({ posts }: { posts: ProfilePost[] }) => {
       {posts.map((post) => (
         <ImageListItem key={post.ID}>
           <img
-            src={post.Images[0]}
+            src={post.RawImages[0]}
             style={{ width: 300, objectFit: "cover" }}
           />
-          <p>{post.Images[0]}</p>
         </ImageListItem>
       ))}
     </ImageList>
