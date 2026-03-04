@@ -4,6 +4,8 @@ export type Post = {
   Date: string;
   Description: string;
   images: Image[];
+  Likes: number;
+  Comments: number;
 };
 
 export type User = {
