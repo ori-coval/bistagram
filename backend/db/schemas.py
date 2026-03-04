@@ -6,11 +6,6 @@ class PostBase(BaseModel):
     image: str
 
 
-class UserAuth(BaseModel):
-    Username: str
-    HashedPassword: str
-
-
 class SignUp(BaseModel):
     username: str
     password: str

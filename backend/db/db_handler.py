@@ -258,6 +258,18 @@ def get_user_followers(db: Session, username: str):
     return followers
 
 
+def is_following(db: Session, username: str, current_user: User) -> bool:
+    user = get_user_by_username(db, username=username)
+    return (
+        db.query(follows)
+        .filter(
+            follows.FollowerID == current_user.ID,
+            follows.FollowedID == user.ID,
+        )
+        .first()
+        is not None
+    )
+
 def get_followers_count(db: Session, username: str) -> int:
     user = get_user_by_username(db, username=username)
     followers_count = (

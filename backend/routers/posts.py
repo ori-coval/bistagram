@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from auth.oauth2 import get_current_user
 from db.models import User
-from db.schemas import PostBase, UserAuth
+from db.schemas import PostBase
 from db import db_handler
 from db.database import get_db
 
@@ -13,7 +13,7 @@ router = APIRouter(tags=["posts"])
 def get_user_posts(
     username: str,
     db: Session = Depends(get_db),
-    current_user: UserAuth = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     return db_handler.get_all_posts_by_user(db, username=username)
 
