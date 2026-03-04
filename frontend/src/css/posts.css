@@ -1,0 +1,10 @@
+.post {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    border: 2px solid gray;
+}
+
+.post-image {
+    
+}

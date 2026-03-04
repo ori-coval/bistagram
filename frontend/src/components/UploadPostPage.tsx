@@ -19,7 +19,7 @@ const UploadPostPage = () => {
         Authorization: `Bearer ${cookies.access.token}`
       }})
       .then(() => {
-        navigate("/home-page");
+        navigate("/profile-page");
       })
     
   };

@@ -1,5 +1,5 @@
 import { useCookies } from "react-cookie";
-import PostScroll from "./PostScroll";
+import PostGrid from "./PostGrid";
 import { useEffect, useState } from "react";
 import type { UserData } from "../types";
 import axios from "axios";
@@ -22,7 +22,7 @@ const UserPage = ({ username }: { username: string }) => {
   
   return (
     <div>
-      <PostScroll posts={userData ? userData.posts : []} />
+      <PostGrid posts={userData ? userData.posts : []} />
     </div>
   );
 };

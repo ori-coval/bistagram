@@ -1,7 +1,7 @@
 import type { Post } from "../types";
 import "../css/posts.css";
 
-const PostScroll = ({ posts }: { posts: Post[] }) => {
+const PostGrid = ({ posts }: { posts: Post[] }) => {
   return (
     <div>
       <ul>
@@ -19,4 +19,4 @@ const PostScroll = ({ posts }: { posts: Post[] }) => {
   );
 };
 
-export default PostScroll;
+export default PostGrid;

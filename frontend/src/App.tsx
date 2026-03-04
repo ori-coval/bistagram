@@ -6,6 +6,7 @@ import LoginPage from "./components/LoginPage";
 import UserSearchPage from "./components/UserSearchPage";
 import { useCookies } from "react-cookie";
 import SignupPage from "./components/SignupPage";
+import ProfilePage from "./components/ProfilePage";
 import HomePage from "./components/HomePage";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <>
             <Route path="/" element={<Navigate to="/home-page" replace />} />
             <Route path="/home-page" element={<HomePage />} />
+            <Route path="/profile-page" element={<ProfilePage />} />
             <Route path="/user-page/:username" element={<DynamicUserPage />} />
             <Route path="/user-search" element={<UserSearchPage />} />
             <Route path="/upload-post" element={<UploadPostPage />} />

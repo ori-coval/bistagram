@@ -1,11 +1,11 @@
 import { useCookies } from "react-cookie";
+import PostGrid from "./PostGrid";
 import { useEffect, useState } from "react";
 import type { UserData } from "../types";
 import axios from "axios";
 import "../css/posts.css";
-import PostScroll from "./PostScroll";
 
-const HomePage = () => {
+const ProfilePage = () => {
   const [cookies,] = useCookies(["access"]);
   const [userData, setUserData] = useState<UserData>();
 
@@ -23,9 +23,9 @@ const HomePage = () => {
   
   return (
     <div>
-      <PostScroll posts={userData ? userData.posts : []} />
+      <PostGrid posts={userData ? userData.posts : []} />
     </div>
   );
 };
 
-export default HomePage;
+export default ProfilePage;

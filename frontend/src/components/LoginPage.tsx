@@ -28,9 +28,9 @@ const LoginPage = () => {
       .then((response) => {
         const token = response.data.access_token;
         const expires = new Date();
-        expires.setMinutes(expires.getMinutes() + 30);
+        expires.setHours(expires.getHours() + 12);
         setCookies("access", { token: token, expires: expires.toString() });
-        navigate("/home-page");
+        navigate("/profile-page");
       });
   };
 
