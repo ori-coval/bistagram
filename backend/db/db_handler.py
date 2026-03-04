@@ -1,9 +1,10 @@
 from datetime import datetime
+from hmac import new
 from turtle import pos
 from fastapi import HTTPException, status
 from sqlalchemy.orm import joinedload
-from db.schemas import PostBase
-from .models import Likes, Post, PostImage, User
+from db.schemas import CommentBase, PostBase, followBase
+from .models import Comments, Likes, Post, PostImage, User, follows
 from sqlalchemy.orm.session import Session
 from auth.hashing import get_password_hash
 from typing import List
@@ -31,19 +32,16 @@ def create_post(db: Session, request: PostBase, current_user: User) -> Post:
     db.refresh(new_image)
     return new_post
 
+
 def get_post_by_id(db: Session, post_id: int) -> Post:
-    post = (
-        db.query(Post)
-        .filter(Post.ID == post_id)
-        .first()
-    )
+    post = db.query(Post).filter(Post.ID == post_id).first()
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    likes_count = len(post.likes)
-    del post.likes
+    likes_count = len(post.Likes)
+    del post.Likes
     post.likes_count = likes_count
     return post
 
@@ -55,20 +53,24 @@ def get_posts_likes(db: Session, post_id: int) -> List[Likes]:
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    return post.likes
+    return post.Likes
 
 
 def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
     user_id = get_user_by_username(db, username=username).ID
     posts = (
         db.query(Post)
-        .options(joinedload(Post.images), joinedload(Post.likes))
+        .options(
+            joinedload(Post.Images), joinedload(Post.Likes), joinedload(Post.Comments)
+        )
         .filter(Post.UserID == user_id)
         .all()
     )
     for post in posts:
-        post.likes_count = len(post.likes)
-        del post.likes
+        post.likes_count = len(post.Likes)
+        post.comments_count = len(post.Comments)
+        del post.Likes
+        del post.Comments
     return posts
 
 
@@ -129,7 +131,7 @@ def get_post_likes_count(db: Session, post_id: int) -> int:
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    return len(likes.likes)
+    return len(likes.Likes)
 
 
 def like_post(db: Session, post_id: int, user_id: int):
@@ -139,7 +141,7 @@ def like_post(db: Session, post_id: int, user_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    if any(like.UserID == user_id for like in post.likes):
+    if any(like.UserID == user_id for like in post.Likes):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User has already liked this post",
@@ -160,3 +162,122 @@ def unlike_post(db: Session, post_id: int, user_id: int):
         )
     db.delete(like)
     db.commit()
+
+
+def get_post_comments(db: Session, post_id: int):
+    post = db.query(Post).filter(Post.ID == post_id).first()
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
+        )
+    return post.Comments
+
+
+def create_comment(db: Session, request: CommentBase, current_user: User) -> Comments:
+    comment = Comments(
+        PostID=request.PostID,
+        ParentCommentID=request.ParentCommentID,
+        CommenterID=current_user.ID,
+        Date=datetime.now(),
+        Comment=request.Comment,
+    )
+
+    db.add(comment)
+    db.commit()
+    db.refresh(comment)
+    return comment
+
+
+def follow_user(db: Session, request: followBase, current_user: User):
+    if not does_user_exist(db, request.Username):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with username {request.Username} not found",
+        )
+    if request.Username == current_user.Username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot follow yourself",
+        )
+    if (
+        db.query(follows)
+        .filter(
+            follows.FollowerID == current_user.ID,
+            follows.FollowedID == get_user_by_username(db, request.Username).ID,
+        )
+        .first()
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"You are already following {request.Username}",
+        )
+
+    new_follow = follows(
+        FollowerID=current_user.ID,
+        FollowedID=get_user_by_username(db, request.Username).ID,
+    )
+    db.add(new_follow)
+    db.commit()
+    return {"message": f"You are now following {request.Username}"}
+
+
+def unfollow_user(db: Session, request: followBase, current_user: User):
+    follow = (
+        db.query(follows)
+        .filter(
+            follows.FollowerID == current_user.ID,
+            follows.FollowedID == get_user_by_username(db, request.Username).ID,
+        )
+        .first()
+    )
+    if not follow:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"You are not following {request.Username}",
+        )
+    db.delete(follow)
+    db.commit()
+    return {"message": f"You have unfollowed {request.Username}"}
+
+
+def get_user_followers(db: Session, username: str):
+    user = get_user_by_username(db, username=username)
+    followers = (
+        db.query(User)
+        .join(follows, follows.FollowerID == User.ID)
+        .filter(follows.FollowedID == user.ID)
+        .all()
+    )
+    return followers
+
+
+def get_followers_count(db: Session, username: str) -> int:
+    user = get_user_by_username(db, username=username)
+    followers_count = (
+        db.query(func.count(follows.FollowerID))
+        .filter(follows.FollowedID == user.ID)
+        .scalar()
+    )
+    return followers_count
+
+
+def get_post_display(db: Session, post_id: int):
+    post = (
+        db.query(Post)
+        .options(
+            joinedload(Post.Images), joinedload(Post.User), joinedload(Post.Comments)
+        )
+        .filter(Post.ID == post_id)
+        .first()
+    )
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
+        )
+    post.already_liked = any(like.UserID == post.User.ID for like in post.Likes)
+    post.comments_count = len(post.Comments)
+    post.likes_count = len(post.Likes)
+    del post.Likes
+    return post

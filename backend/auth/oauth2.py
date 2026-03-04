@@ -12,14 +12,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
  
 SECRET_KEY = 'e8188c31189da9a9f3e157912aee85b8a0e3a78a1de3cd26306a26636c93b1a4'
 ALGORITHM = 'HS256'
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_Hours = 12
  
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
   to_encode = data.copy()
   if expires_delta:
     expire = datetime.utcnow() + expires_delta
   else:
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(hours=ACCESS_TOKEN_EXPIRE_Hours)
   to_encode.update({"exp": expire})
   encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
   return encoded_jwt

@@ -27,7 +27,7 @@ def search_user(
     return db_handler.get_users_by_search_text(db, search_text)
 
 
-@router.get("/user/{username}/all")
+@router.get("/user/{username}/profile")
 def get_user_profile(
     username: str,
     db: Session = Depends(get_db),
@@ -35,10 +35,10 @@ def get_user_profile(
 ):
     user = db_handler.get_user_by_username(db, username=username)
     posts = get_user_posts(username=username, db=db, current_user=current_user)
-    return {"user": user, "posts": posts}
+    return {"User": user, "Posts": posts}
 
 
-@router.get("/user/home")
+@router.get("/self/profile")
 def get_user_homepage(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
