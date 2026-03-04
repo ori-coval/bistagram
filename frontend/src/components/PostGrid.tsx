@@ -1,14 +1,16 @@
-import type { Post } from "../types";
+import type { ProfilePost } from "../types";
 import { ImageList, ImageListItem } from "@mui/material";
 
-const PostGrid = ({ posts }: { posts: Post[] }) => {
+const PostGrid = ({ posts }: { posts: ProfilePost[] }) => {
   return (
-    <ImageList sx={{ width: 700, height: 300 }} cols={3} >
+    <ImageList cols={3} rowHeight={400}>
       {posts.map((post) => (
         <ImageListItem key={post.ID}>
           <img
-            src={post.images[0].image}
+            src={post.Images[0]}
+            style={{ width: 300, objectFit: "cover" }}
           />
+          <p>{post.Images[0]}</p>
         </ImageListItem>
       ))}
     </ImageList>
