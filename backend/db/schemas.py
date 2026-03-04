@@ -16,7 +16,7 @@ class ProfilePicture(BaseModel):
 
 
 class ProfileBio(BaseModel):
-    text: str
+    Bio: str
 
 
 class CommentBase(BaseModel):

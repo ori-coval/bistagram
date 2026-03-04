@@ -72,4 +72,11 @@ def edit_profile_bio(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db_handler.update_user_bio(db, current_user.Username, request.text)
+    return db_handler.update_user_bio(db, current_user.Username, request.Bio)
+
+@router.get("/self/home/posts")
+def get_user_homepage_posts(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return db_handler.get_following_posts(db, current_user)

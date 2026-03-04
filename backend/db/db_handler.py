@@ -70,7 +70,7 @@ def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
         Images = []
         for image in post.Images:
             Images.append(image.Image)
-            
+
         del post.Images
         post.RawImages = Images
         post.likes_count = len(post.Likes)
@@ -270,6 +270,7 @@ def is_following(db: Session, username: str, current_user: User) -> bool:
         is not None
     )
 
+
 def get_followers_count(db: Session, username: str) -> int:
     user = get_user_by_username(db, username=username)
     followers_count = (
@@ -289,11 +290,14 @@ def get_following_count(db: Session, username: str) -> int:
     )
     return following_count
 
+
 def get_post_display(db: Session, post_id: int):
     post = (
         db.query(Post)
         .options(
-            joinedload(Post.Images), joinedload(Post.User), joinedload(Post.Comments).joinedload(Comments.CommentUser)
+            joinedload(Post.Images),
+            joinedload(Post.User),
+            joinedload(Post.Comments).joinedload(Comments.CommentUser),
         )
         .filter(Post.ID == post_id)
         .first()
@@ -306,7 +310,7 @@ def get_post_display(db: Session, post_id: int):
     Images = []
     for image in post.Images:
         Images.append(image.Image)
-        
+
     del post.Images
     post.RawImages = Images
     post.AlreadyLiked = any(like.UserID == post.User.ID for like in post.Likes)
@@ -314,3 +318,40 @@ def get_post_display(db: Session, post_id: int):
     post.LikesCount = len(post.Likes)
     del post.Likes
     return post
+
+
+def get_following_posts(db: Session, current_user: User):
+    db.query(follows).filter(follows.FollowerID == current_user.ID).all()
+    following = db.query(follows).filter(follows.FollowerID == current_user.ID).all()
+    following_ids = [follow.FollowedID for follow in following]
+    posts = (
+        db.query(Post)
+        .options(joinedload(Post.Images), joinedload(Post.User))
+        .filter(Post.UserID.in_(following_ids))
+        .order_by(Post.Date.desc())
+        .all()
+    )
+
+    for post in posts:
+        if post.User.ID:
+            del post.User.ID
+        if post.User.Bio:
+            del post.User.Bio
+        if post.User.HashedPassword:
+            del post.User.HashedPassword
+        del post.UserID
+
+        Images = []
+        for image in post.Images:
+            Images.append(image.Image)
+
+        del post.Images
+        post.RawImages = Images
+
+        post.LikesCount = len(post.Likes)
+        post.CommentsCount = len(post.Comments)
+        del post.Likes
+        del post.Comments
+
+        post.AlreadyLiked = any(like.UserID == current_user.ID for like in post.Likes)
+    return posts
