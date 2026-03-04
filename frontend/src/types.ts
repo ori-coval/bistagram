@@ -62,7 +62,7 @@ export type DialogPost = {
   LikesCount: number;
   CommentsCount: number;
   AlreadyLiked: boolean;
-  Images: string[];
+  RawImages: string[];
   User: {
     Username: string;
     ProfileImage: string;

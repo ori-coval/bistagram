@@ -5,24 +5,9 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
+import type { DialogPost } from "../types";
 
-export class Comment {
-  profileImage: string;
-  username: string;
-  comment: string;
-
-  constructor(profileImage: string, username: string, comment: string) {
-    this.profileImage = profileImage;
-    this.username = username;
-    this.comment = comment;
-  }
-}
-
-interface CommentsDisplayProps {
-  comments: Comment[];
-}
-
-export default function CommentsDisplay({ comments }: CommentsDisplayProps) {
+const CommentsDisplay = ({dialogPost}: { dialogPost : DialogPost}) =>{
   return (
     <List
       sx={{
@@ -35,15 +20,15 @@ export default function CommentsDisplay({ comments }: CommentsDisplayProps) {
         backgroundColor: "#212328",
       }}
     >
-      {comments.map((item, index) => (
+      {dialogPost.Comments.map((item, index) => (
         <ListItem key={index} alignItems="flex-start">
           <ListItemAvatar>
-            <Avatar src={item.profileImage} />
+            <Avatar src={item.User.ProfileImage} />
           </ListItemAvatar>
 
           <ListItemText
-            primary={item.username}
-            secondary={item.comment}
+            primary={item.User.Username}
+            secondary={item.Comment}
             sx={{ color: "white" }}
           />
         </ListItem>
@@ -51,3 +36,5 @@ export default function CommentsDisplay({ comments }: CommentsDisplayProps) {
     </List>
   );
 }
+
+export default CommentsDisplay;
