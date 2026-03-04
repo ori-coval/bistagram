@@ -1,5 +1,4 @@
 import type { Post } from "../types";
-import "../css/posts.css";
 
 const PostScroll = ({ posts }: { posts: Post[] }) => {
   return (

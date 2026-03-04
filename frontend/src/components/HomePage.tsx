@@ -2,7 +2,6 @@ import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import type { UserData } from "../types";
 import axios from "axios";
-import "../css/posts.css";
 import PostScroll from "./PostScroll";
 
 const HomePage = () => {

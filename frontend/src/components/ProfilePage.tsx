@@ -3,7 +3,7 @@ import PostGrid from "./PostGrid";
 import { useEffect, useState } from "react";
 import type { UserData } from "../types";
 import axios from "axios";
-import "../css/posts.css";
+import { Box } from "@mui/material";
 
 const ProfilePage = () => {
   const [cookies,] = useCookies(["access"]);
@@ -22,9 +22,11 @@ const ProfilePage = () => {
   }, []);
   
   return (
-    <div>
-      <PostGrid posts={userData ? userData.posts : []} />
-    </div>
+    <Box sx={{ display: "flex", minHeight: "100vh", justifyContent: "center", border: 1 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", wdith: 1500, border: 1 }}>
+        <PostGrid posts={userData ? userData.posts : []} />
+      </Box>
+    </Box>
   );
 };
 

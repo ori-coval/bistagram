@@ -1,5 +1,4 @@
 import type { Post } from "../types";
-import "../css/posts.css";
 import { ImageList, ImageListItem } from "@mui/material";
 
 const PostGrid = ({ posts }: { posts: Post[] }) => {
