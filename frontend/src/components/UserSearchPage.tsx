@@ -44,7 +44,7 @@ function Highlight({
 const UserSearchPage = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(["access"]);
-  const [searchBarOpen, setSearchBarOpen] = useState(false);
+  // const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [options, setOptions] = useState<readonly User[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -80,9 +80,9 @@ const UserSearchPage = () => {
     >
       <Autocomplete
         onChange={(_, chosenUser) => navigate(`/profile-page/${chosenUser ? chosenUser.Username : ""}`)}
-        open={searchBarOpen}
-        onOpen={() => setSearchBarOpen(true)}
-        onClose={() => setSearchBarOpen(false)}
+        open={true}
+        // onOpen={() => setSearchBarOpen(true)}
+        // onClose={() => setSearchBarOpen(false)}
         inputValue={searchValue}
         onInputChange={(_, newValue) => setSearchValue(newValue)}
         options={options}
@@ -116,7 +116,7 @@ const UserSearchPage = () => {
             elevation={0}
           >
             <Avatar
-              sx={{ width: 34, height: 34 }}
+              sx={{ width: 40, height: 40 }}
               src={option.ProfileImage}
             ></Avatar>
             <Box sx={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
@@ -139,6 +139,7 @@ const UserSearchPage = () => {
                 sx: {
                   borderRadius: 999,
                   boxShadow: 1,
+                  height: 48,
                 },
                 startAdornment: (
                   <InputAdornment position="start">
