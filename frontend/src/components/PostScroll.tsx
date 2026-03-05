@@ -13,15 +13,14 @@ const PostScroll = ({ posts, changeLikeStatus, openPostDialog }: { posts: Scroll
     new Date().toLocaleString()
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) {
-      //return `${minutes}m`;
+      return `${minutes}m`;
     }
     const hours = Math.floor(minutes / 60);
     if (hours < 24) {
-      //return `${hours}h`;
+      return `${hours}h`;
     }
-    const days = Math.floor(minutes / 24);
-    //return `${days}d`;
-    return `$`
+    const days = Math.floor(hours / 24);
+    return `${days}d`;
   }
 
   return (
