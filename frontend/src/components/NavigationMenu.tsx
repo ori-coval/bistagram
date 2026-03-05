@@ -17,7 +17,7 @@ const NavigationMenu = ({current_pathname}: {current_pathname: string}) => {
         }}
         sx={{
           width: "100vw",
-          position: "absolute",
+          position: "fixed",
           bottom: 0,
           left: 0,
           right: 0,
