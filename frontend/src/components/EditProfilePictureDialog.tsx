@@ -1,5 +1,4 @@
-import { Button, Stack } from "@mui/material";
-import { useRef } from "react";
+import { Stack } from "@mui/material";
 import React from "react";
 
 const EditProfilePictureDialog = ({updateProfileImage, imageRef} : {updateProfileImage: (arg0: string) => void; imageRef: React.RefObject<HTMLInputElement | null>}) => {
