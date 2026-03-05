@@ -20,9 +20,6 @@ const CommentsDisplay = ({ comments }: { comments: DialogComment[] }) => {
 
     
   };
-  for (var i = 0; i < 10; i++) {
-    comments.push(comments[0]);
-  }
 
   return (
     <Box
