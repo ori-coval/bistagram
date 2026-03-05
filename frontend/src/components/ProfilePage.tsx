@@ -185,7 +185,7 @@ const ProfilePage = ({ username }: { username: string }) => {
   return !loading ? (
     <div>
       <Stack direction="row" justifyContent="center">
-        <Stack direction="column">
+        <Stack direction="column" >
           <ProfileInfo
             profileData={
               profileData
@@ -207,6 +207,7 @@ const ProfilePage = ({ username }: { username: string }) => {
             onShowFollowing={openFollowingDialog}
             onClickFollow={clickFollow}
           />
+          <p style={{marginTop: 10}}/>
           <PostGrid
             posts={profileData ? profileData.Posts : []}
             openPostDialog={openPostDialog}

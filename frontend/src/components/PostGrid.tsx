@@ -39,6 +39,7 @@ const PostGrid = ({
               width: "100%",
               height: "100%",
               objectFit: "cover",
+              borderRadius: 4
             }}
           />
         </div>
