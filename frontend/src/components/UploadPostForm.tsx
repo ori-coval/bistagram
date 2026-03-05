@@ -40,7 +40,7 @@ const UploadPostForm = ({
     <Stack direction="column" alignItems="center">
       <Card sx={{ width: 500, boxShadow: "none" }}>
         <CardHeader></CardHeader>
-        <CardMedia component="img" src={image} sx={{ paddingBottom: 1 }}/>
+        <CardMedia component="img" src={image} sx={{ marginBottom: 1 }}/>
       </Card>
       <input hidden type="file" accept="image/png, image/jpeg" ref={imageRef} onChange={loadImage}/>
       <Button variant="text" onClick={() => { imageRef.current ? imageRef.current.click() : {} }}>Choose Image</Button>

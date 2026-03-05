@@ -16,6 +16,7 @@ const NavigationMenu = ({current_pathname}: {current_pathname: string}) => {
           navigate(newValue);
         }}
         sx={{
+          width: "100vw",
           position: "fixed",
           bottom: 0,
           left: 0,

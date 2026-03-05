@@ -31,7 +31,7 @@ const ProfileInfo = ({
   onClickFollow: () => void;
 }) => {
   return (
-    <Container maxWidth="md" sx={{ paddingTop: 2 }}>
+    <Container maxWidth="md" sx={{ marginTop: 2 }}>
       <Grid container spacing={4} alignItems="center">
         <Grid size={{ xs: 12, sm: 4 }} display="flex" justifyContent="center">
           {isOwnProfile ? (
@@ -124,6 +124,7 @@ const ProfileInfo = ({
                   <Button
                     variant="contained"
                     sx={{
+                      marginTop: 2,
                       backgroundColor: profileData.AlreadyFollowing
                         ? "#25292e"
                         : "#1976d2",

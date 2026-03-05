@@ -47,11 +47,11 @@ const PostScroll = ({ posts, changeLikeStatus, openPostDialog }: { posts: Scroll
             <Typography sx={{ wordWrap: "break-word" }}>
               {post.Description}
             </Typography>
-            <Stack direction="row" spacing={1} sx={{ paddingTop: 1 }}>
+            <Stack direction="row" spacing={1} sx={{ marginTop: 1 }}>
               <div onClick={() => { changeLikeStatus(post.ID, post.AlreadyLiked) }} style={{ cursor: "pointer" }}>
                 {post.AlreadyLiked ? <FavoriteIcon/> : <FavoriteBorderIcon />}
               </div>
-              <Typography sx={{ paddingRight: 1 }}>
+              <Typography sx={{ marginRight: 1 }}>
                 {post.LikesCount}
               </Typography>
               <div onClick={() => { openPostDialog(post.ID) }} style={{ cursor: "pointer" }}>
