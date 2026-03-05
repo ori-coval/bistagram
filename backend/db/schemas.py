@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -22,7 +24,7 @@ class ProfileBio(BaseModel):
 class CommentBase(BaseModel):
     PostID: int
     Comment: str
-    ParentCommentID: int | None = None
+    ParentCommentID: Optional[int] = None
 
 
 class followBase(BaseModel):

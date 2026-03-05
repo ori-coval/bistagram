@@ -10,11 +10,6 @@ from db import db_handler
 router = APIRouter(tags=["comments"])
 
 
-@router.get("/post/{post_id}/comments")
-def get_post_comments(post_id: int, db: Session = Depends(get_db)):
-    return db_handler.get_post_comments(db, post_id)
-
-
 @router.post("/create-comment")
 def create_comment(
     request: CommentBase,

@@ -12,6 +12,13 @@ from sqlalchemy import func
 
 
 def create_post(db: Session, request: PostBase, current_user: User) -> Post:
+
+    if request.Image is None or request.Image == "":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Image is required",
+        )
+
     new_post = Post(
         UserID=current_user.ID, Date=datetime.now(), Description=request.Description
     )
@@ -64,6 +71,7 @@ def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
             joinedload(Post.Images), joinedload(Post.Likes), joinedload(Post.Comments)
         )
         .filter(Post.UserID == user_id)
+        .order_by(Post.Date.desc())
         .all()
     )
     for post in posts:
@@ -170,17 +178,10 @@ def unlike_post(db: Session, post_id: int, user_id: int):
     db.commit()
 
 
-def get_post_comments(db: Session, post_id: int):
-    post = db.query(Post).filter(Post.ID == post_id).first()
-    if not post:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id {post_id} not found",
-        )
-    return post.Comments
+def create_comment(db: Session, request: CommentBase, current_user: User) -> List[Comments]:
+    if not db.query(Post).filter(Post.ID == request.PostID).first():
+        raise HTTPException(404, "Post not found")
 
-
-def create_comment(db: Session, request: CommentBase, current_user: User) -> Comments:
     comment = Comments(
         PostID=request.PostID,
         ParentCommentID=request.ParentCommentID,
@@ -192,7 +193,7 @@ def create_comment(db: Session, request: CommentBase, current_user: User) -> Com
     db.add(comment)
     db.commit()
     db.refresh(comment)
-    return comment
+    return get_post_display(db, request.PostID)
 
 
 def follow_user(db: Session, request: followBase, current_user: User):
@@ -299,6 +300,7 @@ def get_post_display(db: Session, post_id: int):
             joinedload(Post.User),
             joinedload(Post.Comments).joinedload(Comments.CommentUser),
         )
+        .order_by(Post.Date.desc())
         .filter(Post.ID == post_id)
         .first()
     )
@@ -317,6 +319,7 @@ def get_post_display(db: Session, post_id: int):
     post.CommentsCount = len(post.Comments)
     post.LikesCount = len(post.Likes)
     del post.Likes
+    post.Comments.sort(key=lambda comment: comment.Date, reverse=True)
     return post
 
 

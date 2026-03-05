@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -29,7 +30,7 @@ class Post(Base):
         Integer, primary_key=True, index=True, autoincrement=True
     )
     UserID: Mapped[int] = mapped_column(Integer, ForeignKey("User.ID"))
-    Date: Mapped[DateTime] = mapped_column(DateTime)
+    Date: Mapped[datetime] = mapped_column(DateTime)
     Description: Mapped[str] = mapped_column(String)
 
     User: Mapped["User"] = relationship("User", back_populates="Posts")
@@ -70,7 +71,7 @@ class Comments(Base):
         Integer, ForeignKey("Comments.ID"), nullable=True
     )
     CommenterID: Mapped[int] = mapped_column(Integer, ForeignKey("User.ID"))
-    Date: Mapped[DateTime] = mapped_column(DateTime)
+    Date: Mapped[datetime] = mapped_column(DateTime)
     Comment: Mapped[str] = mapped_column(String)
     CommentUser = relationship("User", back_populates="UserComments")
     CommentPost = relationship("Post", back_populates="Comments")
