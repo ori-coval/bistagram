@@ -11,6 +11,7 @@ import type { ScrollPost } from "../types";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import ShareIcon from "@mui/icons-material/Share";
 import { useNavigate } from "react-router-dom";
 import { getPostTime } from "../utility";
 
@@ -90,6 +91,14 @@ const PostScroll = ({
                 <CommentOutlinedIcon />
               </div>
               <Typography>{post.CommentsCount}</Typography>
+              <div
+                onClick={async () => {
+                  await navigator.clipboard.writeText(`http://85.65.146.6:12345/post/${post.ID}`);
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                <ShareIcon />
+              </div>
             </Stack>
           </CardContent>
         </Card>
