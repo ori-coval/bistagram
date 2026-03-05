@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class PostBase(BaseModel):
     Description: str
-    image: str
+    Image: str
 
 
 class SignUp(BaseModel):

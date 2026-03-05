@@ -26,7 +26,7 @@ def create_post(db: Session, request: PostBase, current_user: User) -> Post:
         .ID  # type: ignore
     )
 
-    new_image = PostImage(PostID=post_ID, image=request.image)
+    new_image = PostImage(PostID=post_ID, Image=request.Image)
     db.add(new_image)
     db.commit()
     db.refresh(new_image)
@@ -350,8 +350,8 @@ def get_following_posts(db: Session, current_user: User):
 
         post.LikesCount = len(post.Likes)
         post.CommentsCount = len(post.Comments)
+        post.AlreadyLiked = any(like.UserID == current_user.ID for like in post.Likes)
         del post.Likes
         del post.Comments
 
-        post.AlreadyLiked = any(like.UserID == current_user.ID for like in post.Likes)
     return posts

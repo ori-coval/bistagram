@@ -13,6 +13,7 @@ setup(
         "python-multipart",
         "aiofiles",
         "python-jose",
-        "pymysql"
+        "pymysql",
+        "cryptography"
     ],
 )
