@@ -79,7 +79,15 @@ const UserSearchPage = () => {
       }}
     >
       <Autocomplete
-        onChange={(_, chosenUser) => navigate(`/profile-page/${chosenUser ? chosenUser.Username : ""}`)}
+        onChange={(_, chosenUser) =>
+          navigate(`/profile-page/${chosenUser ? chosenUser.Username : ""}`)
+        }
+        ListboxProps={{
+          style: {
+            maxHeight: "calc(100vh - 220px)",
+            overflowY: "auto",
+          },
+        }}
         open={true}
         // onOpen={() => setSearchBarOpen(true)}
         // onClose={() => setSearchBarOpen(false)}
@@ -107,10 +115,8 @@ const UserSearchPage = () => {
             {...props}
             sx={{
               display: "flex",
-              gap: 1,
+              gap: 1.5,
               alignItems: "center",
-              px: 1.5,
-              py: 1,
               "&:hover": { backgroundColor: "action.hover" },
             }}
             elevation={0}
