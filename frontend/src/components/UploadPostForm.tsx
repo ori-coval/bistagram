@@ -1,4 +1,13 @@
-import { Button, Card, CardHeader, CardMedia, FilledInput, Input, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardMedia,
+  FilledInput,
+  Input,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useRef } from "react";
 
 const UploadPostForm = ({
@@ -40,14 +49,33 @@ const UploadPostForm = ({
     <Stack direction="column" alignItems="center">
       <Card sx={{ width: 500, boxShadow: "none" }}>
         <CardHeader></CardHeader>
-        <CardMedia component="img" src={image} sx={{ marginBottom: 1 }}/>
+        <CardMedia component="img" src={image} sx={{ marginBottom: 1 }} />
       </Card>
-      <input hidden type="file" accept="image/png, image/jpeg" ref={imageRef} onChange={loadImage}/>
-      <Button variant="text" onClick={() => { imageRef.current ? imageRef.current.click() : {} }}>Choose Image</Button>
+      <input
+        hidden
+        type="file"
+        accept="image/png, image/jpeg"
+        ref={imageRef}
+        onChange={loadImage}
+      />
+      <Button
+        variant="text"
+        onClick={() => {
+          imageRef.current ? imageRef.current.click() : {};
+        }}
+      >
+        Choose Image
+      </Button>
       <br />
-      <TextField fullWidth multiline onChange={(e) => setDescription(e.target.value)} />
+      <TextField
+        fullWidth
+        multiline
+        onChange={(e) => setDescription(e.target.value)}
+      />
       <br />
-      <Button variant="contained" onClick={submitPost}>Upload</Button>
+      <Button variant="contained" onClick={submitPost}>
+        Upload
+      </Button>
     </Stack>
   );
 };
