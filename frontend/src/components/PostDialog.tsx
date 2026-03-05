@@ -1,10 +1,9 @@
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import type { DialogPost } from "../types";
 import CommentsDisplay from "./CommentsDisplay";
-import { Style } from "@mui/icons-material";
 
 const PostDialog = ({
   dialogPost,
@@ -20,42 +19,57 @@ const PostDialog = ({
       <Dialog
         onClose={onClose}
         open={open}
-        maxWidth={"md"}
+        maxWidth={false}
         PaperProps={{
           sx: {
-            height: "90%",
+            height: "90vh",
+            width: "90vw",
+            backgroundColor: "#212328",
+            display: "flex",
+            flexDirection: "row",
             overflow: "hidden",
-            maxWidth: "90%",
-            width: "90%",
           },
         }}
       >
-        <Grid
-          container
-          justifyContent={"center"}
-          alignItems={"center"}
-          style={{ backgroundColor: "#212328", height: "100%" }}
+        <Box
+          sx={{
+            flex: 7,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "black",
+          }}
         >
           <img
             src={dialogPost.RawImages[0]}
             style={{
-              maxHeight: "90%",
-              width: "70%",
+              maxHeight: "100%",
+              maxWidth: "100%",
               objectFit: "contain",
             }}
           />
+        </Box>
+
+        <Box
+          sx={{
+            flex: 3,
+            display: "flex",
+            flexDirection: "column",
+            borderLeft: "1px solid #333",
+          }}
+        >
           <CommentsDisplay comments={dialogPost.Comments} />
-        </Grid>
+        </Box>
+
         <IconButton
           aria-label="close"
           onClick={onClose}
-          sx={() => ({
-            position: "fixed",
-            right: 8,
-            top: 8,
+          sx={{
+            position: "absolute",
+            right: 12,
+            top: 12,
             color: "white",
-            scale: "1.1",
-          })}
+          }}
         >
           <CloseIcon />
         </IconButton>
