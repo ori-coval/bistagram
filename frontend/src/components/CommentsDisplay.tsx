@@ -31,6 +31,7 @@ const CommentsDisplay = ({
         flexDirection: "column",
         height: "100vh",
         backgroundColor: "#212328",
+        overflow: "hidden",
       }}
     >
       <List
@@ -39,6 +40,7 @@ const CommentsDisplay = ({
           overflowY: "auto",
           px: 2,
           py: 1,
+          minHeight: 0,
         }}
       >
         {comments.map((comment) => (
