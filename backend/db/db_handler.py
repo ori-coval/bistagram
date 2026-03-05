@@ -106,7 +106,7 @@ def create_user(db: Session, username: str, password: str) -> User:
     if does_user_exist(db, username=username):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"User with username {username} already exists",
+            detail=f"USER_EXISTS",
         )
     new_user = User(Username=username, HashedPassword=get_password_hash(password))
     db.add(new_user)

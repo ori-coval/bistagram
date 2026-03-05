@@ -8,6 +8,7 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [signupError, setSignupError] = useState("");
 
   const submitSignup = () => {
     if (username.includes(" ") || password.includes(" ") || username.length === 0 || password.length === 0) {
@@ -29,11 +30,14 @@ const SignupPage = () => {
       )
       .then((_) => {
         navigate("/login");
-      });
+      })
+      .catch((err) => {
+        setSignupError(err.response.data.detail);
+      })
   };
   return (
     <Stack direction="row" justifyContent="center" alignItems="center" sx={{ minHeight: "97vh" }}>
-      <SignupForm setUsername={setUsername} setPassword={setPassword} submitSignup={submitSignup} />
+      <SignupForm setUsername={setUsername} setPassword={setPassword} submitSignup={submitSignup} signupError={signupError} />
     </Stack>
   );
 };

@@ -10,6 +10,7 @@ const LoginPage = ({ nextPage }: { nextPage: string }) => {
   const [, setCookies] = useCookies(["access"]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const submitLogin = () => {
     axios
@@ -32,12 +33,15 @@ const LoginPage = ({ nextPage }: { nextPage: string }) => {
         expires.setHours(expires.getHours() + 12);
         setCookies("access", { token: token, expires: expires.toString() });
         navigate(nextPage);
+      })
+      .catch((err) => {
+        setLoginError(err.response.data.detail);
       });
   };
 
   return (
     <Stack direction="row" justifyContent="center" alignItems="center" sx={{ minHeight: "97vh" }}>
-      <LoginForm setUsername={setUsername} setPassword={setPassword} submitLogin={submitLogin} />
+      <LoginForm setUsername={setUsername} setPassword={setPassword} submitLogin={submitLogin} loginError={loginError} />
     </Stack>
   );
 };
