@@ -14,6 +14,7 @@ import {
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
+import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -79,6 +80,11 @@ const FollowDialog = ({
   const placeholder = useMemo(() => "Search users by name", []);
 
   useEffect(() => {
+    setOptions([]);
+    setSearchValue("");
+  }, [searchGroup, username]);
+
+  useEffect(() => {
     setLoading(true);
 
     axios
@@ -97,14 +103,15 @@ const FollowDialog = ({
   return (
     // <div>
       <BootstrapDialog
-        onClose={() => {onClose();}}
+        onClose={onClose}
         aria-labelledby="customized-dialog-title"
         open={open}
         maxWidth="sm"
+        maxHeight="sm"
         fullWidth
       >
-        <DialogTitle sx={{ m: 0, p: 2}} id="customized-dialog-title">
-          {searchGroup}
+        <DialogTitle sx={{ m: 0, p: 2, fontWeight: "bold"}} id="customized-dialog-title">
+          {searchGroup[0].toUpperCase() + searchGroup.slice(1)}
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -122,7 +129,7 @@ const FollowDialog = ({
           <Box
             sx={{
               width: "100%",
-              minHeight: 400,
+              minHeight: 300,
               mt: 3,
             }}
           >
@@ -132,6 +139,15 @@ const FollowDialog = ({
                   `/profile-page/${chosenUser ? chosenUser.Username : ""}`,
                 )
               }
+              disablePortal
+              slotProps={{
+                listbox: {
+                  sx: {
+                    maxHeight: 230,
+                    overflowY: "auto",
+                  },
+                },
+              }}
               open={open}
               disableClearable
               forcePopupIcon={false}
@@ -212,9 +228,19 @@ const FollowDialog = ({
                       ),
                       endAdornment: (
                         <>
-                          {loading ? (
+                          {searchValue && (
+                            <IconButton
+                              size="small"
+                              onClick={() => setSearchValue("")}
+                            >
+                              <ClearIcon fontSize="small" />
+                            </IconButton>
+                          )}
+
+                          {loading && (
                             <CircularProgress color="inherit" size={20} />
-                          ) : null}
+                          )}
+
                           {params.InputProps.endAdornment}
                         </>
                       ),
