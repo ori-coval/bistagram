@@ -12,6 +12,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import { useNavigate } from "react-router-dom";
+import { getPostTime } from "../utility";
 
 const PostScroll = ({
   posts,
@@ -23,23 +24,6 @@ const PostScroll = ({
   openPostDialog: (arg: number) => void;
 }) => {
   const navigate = useNavigate();
-
-  const getPostTime = (post: ScrollPost): string => {
-    const seconds = Math.floor(
-      (Date.now() - new Date(post.Date).getTime() - 2 * 60 * 60 * 1000) / 1000,
-    );
-    new Date().toLocaleString();
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) {
-      return `${minutes}m`;
-    }
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) {
-      return `${hours}h`;
-    }
-    const days = Math.floor(hours / 24);
-    return `${days}d`;
-  };
 
   return (
     <Stack spacing={1}>
@@ -71,7 +55,7 @@ const PostScroll = ({
                   >
                     {post.User.Username}
                   </span>{" "}
-                  • {getPostTime(post)}
+                  • {getPostTime(post.Date)}
                 </Typography>
               </>
             }

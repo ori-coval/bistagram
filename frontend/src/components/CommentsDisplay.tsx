@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import type { DialogComment } from "../types";
+import { getPostTime } from "../utility";
 
 const CommentsDisplay = ({
   comments,
@@ -50,7 +51,7 @@ const CommentsDisplay = ({
             </ListItemAvatar>
 
             <ListItemText
-              primary={comment.CommentUser.Username}
+              primary={`${comment.CommentUser.Username} • ${getPostTime(comment.Date)}`}
               secondary={comment.Comment}
               primaryTypographyProps={{ color: "white" }}
               secondaryTypographyProps={{ color: "#aaa" }}
