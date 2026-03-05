@@ -8,6 +8,7 @@ import ProfileInfo from "./ProfileInfo";
 import PostDialog from "./PostDialog";
 import EditBioDialog from "./EditBioDialog";
 import LoadingPage from "./LoadingPage";
+import EditProfilePictureDialog from "./EditProfilePictureDialog";
 
 const ProfilePage = ({ username }: { username: string }) => {
   const [cookies] = useCookies(["access"]);
@@ -68,6 +69,7 @@ const ProfilePage = ({ username }: { username: string }) => {
     setEditBioDialogOpen(true);
   };
 
+
   const closeEditBioDialog = () => {
     setEditBioDialogOpen(false);
   };
@@ -95,6 +97,10 @@ const ProfilePage = ({ username }: { username: string }) => {
     });
   };
 
+  const imageRef = useRef<HTMLInputElement>(null);
+
+  const openEditAvatarDialog = () => { imageRef.current ? imageRef.current.click() : {} }
+
   const updateProfileImage = (newProfileImage: string) => {
     axios.post(
       "http://85.65.146.6:9512/user/edit-profile-picture",
@@ -107,7 +113,7 @@ const ProfilePage = ({ username }: { username: string }) => {
     );
     setProfileData((oldProfileData) => {
       if (!oldProfileData) return oldProfileData;
-      
+
       return {
         ...oldProfileData,
         User: {
@@ -116,7 +122,7 @@ const ProfilePage = ({ username }: { username: string }) => {
         },
       };
     });
-  }
+  };
 
   const clickFollow = () => {
     axios.post(
@@ -146,66 +152,69 @@ const ProfilePage = ({ username }: { username: string }) => {
 
   const f = () => {};
 
-  return (
-    !loading ?
-      <div>
-        <Stack direction="row" justifyContent="center">
-          <Stack direction="column">
-            <ProfileInfo
-              profileData={
-                profileData
-                  ? profileData
-                  : {
-                      User: { Username: "", Bio: "", ProfileImage: "" },
-                      Posts: [],
-                      AlreadyFollowing: false,
-                      FollowersCount: 0,
-                      FollowingCount: 0,
-                    }
-              }
-              isOwnProfile={username === ""}
-              onEditBio={openEditBioDialog}
-              onEditAvatar={f}
-              onShowFollowers={f}
-              onShowFollowing={f}
-              onClickFollow={clickFollow}
-            />
-            <PostGrid
-              posts={profileData ? profileData.Posts : []}
-              openPostDialog={openPostDialog}
-            />
-          </Stack>
+  return !loading ? (
+    <div>
+      <Stack direction="row" justifyContent="center">
+        <Stack direction="column">
+          <ProfileInfo
+            profileData={
+              profileData
+                ? profileData
+                : {
+                    User: { Username: "", Bio: "", ProfileImage: "" },
+                    Posts: [],
+                    AlreadyFollowing: false,
+                    FollowersCount: 0,
+                    FollowingCount: 0,
+                  }
+            }
+            isOwnProfile={username === ""}
+            onEditBio={openEditBioDialog}
+            onEditAvatar={openEditAvatarDialog}
+            onShowFollowers={f}
+            onShowFollowing={f}
+            onClickFollow={clickFollow}
+          />
+          <PostGrid
+            posts={profileData ? profileData.Posts : []}
+            openPostDialog={openPostDialog}
+          />
         </Stack>
-        <PostDialog
-          dialogPost={
-            dialogPost
-              ? dialogPost
-              : {
-                  ID: 0,
-                  Description: "",
-                  Date: "",
-                  LikesCount: 0,
-                  CommentsCount: 0,
-                  AlreadyLiked: false,
-                  RawImages: [],
-                  User: { Username: "", ProfileImage: "" },
-                  Comments: [],
-                }
-          }
-          open={postDialogOpen}
-          onClose={() => {
-            setPostDialogOpen(false);
-          }}
-          createComment={createComment}
+      </Stack>
+      <PostDialog
+        dialogPost={
+          dialogPost
+            ? dialogPost
+            : {
+                ID: 0,
+                Description: "",
+                Date: "",
+                LikesCount: 0,
+                CommentsCount: 0,
+                AlreadyLiked: false,
+                RawImages: [],
+                User: { Username: "", ProfileImage: "" },
+                Comments: [],
+              }
+        }
+        open={postDialogOpen}
+        onClose={() => {
+          setPostDialogOpen(false);
+        }}
+        createComment={createComment}
       />
-        <EditBioDialog
-          open={editBioDialogOpen}
-          onClose={closeEditBioDialog}
-          currentBio={profileData ? profileData.User.Bio : ""}
-          updateBio={updateBio}
-        />
-      </div>
-    :
+      <EditBioDialog
+        open={editBioDialogOpen}
+        onClose={closeEditBioDialog}
+        currentBio={profileData ? profileData.User.Bio : ""}
+        updateBio={updateBio}
+      />
+      <EditProfilePictureDialog
+        updateProfileImage={updateProfileImage}
+        imageRef={imageRef}
+      />
+    </div>
+  ) : (
     <LoadingPage />
   );
 };

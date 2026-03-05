@@ -29,7 +29,7 @@ const CommentsDisplay = ({
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        height: "100%",
+        height: "100vh",
         backgroundColor: "#212328",
       }}
     >
@@ -83,7 +83,9 @@ const CommentsDisplay = ({
         />
 
         <Button
-          onClick={()=>{createComment(postID, newComment)}}
+          onClick={() => {
+            createComment(postID, newComment);
+          }}
           disabled={!newComment.trim()}
           sx={{
             color: "#0095f6",
