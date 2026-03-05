@@ -45,9 +45,19 @@ const UploadPostForm = ({
 
   return (
     <Stack direction="column" alignItems="center">
-      <Card sx={{ width: 500, boxShadow: "none" }}>
+      <Card
+        sx={{
+          width: { xs: "100%", sm: 400, md: 500 },
+          maxWidth: 500,
+          boxShadow: "none",
+        }}
+      >
         <CardHeader></CardHeader>
-        <CardMedia component="img" src={image} sx={{ marginBottom: 1 }} />
+        <CardMedia
+          component="img"
+          src={image}
+          sx={{ marginBottom: 1, maxHeight: 400, objectFit: "contain" }}
+        />
       </Card>
       <input
         hidden
