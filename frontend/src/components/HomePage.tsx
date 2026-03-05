@@ -82,6 +82,18 @@ const HomePage = () => {
       }
       return oldPosts;
     });
+
+    setDialogPost((oldPost) => {
+      if (!oldPost) return oldPost;
+      let newPosts = { ...oldPost };
+      if (oldPost?.ID === postID && oldPost.AlreadyLiked === alreadyLiked) {
+        newPosts.AlreadyLiked = !alreadyLiked;
+        newPosts.LikesCount += alreadyLiked ? -1 : 1;
+        return newPosts;
+      }
+
+      return oldPost;
+    })
   };
 
   return !loading ? (
@@ -101,7 +113,22 @@ const HomePage = () => {
         </Stack>
       </Stack>
       <PostDialog
-        dialogPost={dialogPost}
+        dialogPost={
+          dialogPost
+            ? dialogPost
+            : {
+                ID: 0,
+                Description: "",
+                Date: "",
+                LikesCount: 0,
+                CommentsCount: 0,
+                AlreadyLiked: false,
+                RawImages: [],
+                User: { Username: "", ProfileImage: "" },
+                Comments: [],
+              }
+        }
+        changeLikeStatus={changeLikeStatus}
         open={postDialogOpen}
         onClose={() => {
           setPostDialogOpen(false);

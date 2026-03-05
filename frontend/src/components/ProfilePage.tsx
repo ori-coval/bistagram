@@ -8,14 +8,20 @@ import ProfileInfo from "./ProfileInfo";
 import PostDialog from "./PostDialog";
 import LoadingPage from "./LoadingPage";
 import EditProfilePictureDialog from "./EditProfilePictureDialog";
+import FollowDialog from "./FollowDialog";
 
 const ProfilePage = ({ username }: { username: string }) => {
-  const [cookies,] = useCookies(["access"]);
+  const [cookies] = useCookies(["access"]);
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
   const [editingBio, setEditingBio] = useState(false);
+  const [editBioDialogOpen, setEditBioDialogOpen] = useState(false);
+  const [followDialogOpen, setFollowDialogOpen] = useState(false);
+  const [followDialogSearchGroup, setFollowDialogSearchGroup] = useState<
+    "followers" | "following"
+  >("followers");
 
   const createComment = async (postID: number, newComment: string) => {
     if (!newComment.trim()) return;
@@ -90,7 +96,9 @@ const ProfilePage = ({ username }: { username: string }) => {
 
   const imageRef = useRef<HTMLInputElement>(null);
 
-  const openEditAvatarDialog = () => { imageRef.current ? imageRef.current.click() : {} }
+  const openEditAvatarDialog = () => {
+    imageRef.current ? imageRef.current.click() : {};
+  };
 
   const updateProfileImage = (newProfileImage: string) => {
     axios.post(
@@ -141,7 +149,38 @@ const ProfilePage = ({ username }: { username: string }) => {
     });
   };
 
-  const f = () => {};
+  const openFollowersDialog = () => {
+    setFollowDialogSearchGroup("followers");
+    setFollowDialogOpen(true);
+  };
+
+  const openFollowingDialog = () => {
+    setFollowDialogSearchGroup("following");
+    setFollowDialogOpen(true);
+  };
+  const changeLikeStatus = (postID: number, alreadyLiked: boolean) => {
+    setDialogPost((oldPost) => {
+      if (!oldPost) return oldPost;
+      let newPosts = { ...oldPost };
+      if (oldPost?.ID === postID && oldPost.AlreadyLiked === alreadyLiked) {
+        axios.post(
+          `http://85.65.146.6:9512/post/${postID}/${alreadyLiked ? "unlike" : "like"}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${cookies.access.token}`,
+            },
+          },
+        );
+        newPosts.AlreadyLiked = !alreadyLiked;
+        if (!newPosts.LikesCount) newPosts.LikesCount = 0;
+        newPosts.LikesCount += alreadyLiked ? -1 : 1;
+        return newPosts;
+      }
+
+      return oldPost;
+    });
+  };
 
   return !loading ? (
     <div>
@@ -164,8 +203,8 @@ const ProfilePage = ({ username }: { username: string }) => {
             setEditingBio={setEditingBio}
             updateBio={updateBio}
             onEditAvatar={openEditAvatarDialog}
-            onShowFollowers={f}
-            onShowFollowing={f}
+            onShowFollowers={openFollowersDialog}
+            onShowFollowing={openFollowingDialog}
             onClickFollow={clickFollow}
           />
           <PostGrid
@@ -175,7 +214,22 @@ const ProfilePage = ({ username }: { username: string }) => {
         </Stack>
       </Stack>
       <PostDialog
-        dialogPost={dialogPost}
+        dialogPost={
+          dialogPost
+            ? dialogPost
+            : {
+                ID: 0,
+                Description: "",
+                Date: "",
+                LikesCount: 0,
+                CommentsCount: 0,
+                AlreadyLiked: false,
+                RawImages: [],
+                User: { Username: "", ProfileImage: "" },
+                Comments: [],
+              }
+        }
+        changeLikeStatus={changeLikeStatus}
         open={postDialogOpen}
         onClose={() => {
           setPostDialogOpen(false);
@@ -185,6 +239,20 @@ const ProfilePage = ({ username }: { username: string }) => {
       <EditProfilePictureDialog
         updateProfileImage={updateProfileImage}
         imageRef={imageRef}
+      />
+      <FollowDialog
+        open={followDialogOpen}
+        onClose={() => {
+          setFollowDialogOpen(false);
+        }}
+        searchGroup={followDialogSearchGroup}
+        username={
+          username === ""
+            ? profileData
+              ? profileData.User.Username
+              : ""
+            : username
+        }
       />
     </div>
   ) : (

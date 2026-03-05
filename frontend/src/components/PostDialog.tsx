@@ -8,15 +8,18 @@ import { useMediaQuery, useTheme } from "@mui/material";
 
 const PostDialog = ({
   dialogPost,
+  changeLikeStatus,
   open,
   onClose,
   createComment,
 }: {
-  dialogPost: DialogPost | undefined;
+  dialogPost: DialogPost;
+  changeLikeStatus: (arg1: number, arg2: boolean) => void;
   open: boolean;
   onClose: () => void;
   createComment: (PostID: number, Comment: string) => void;
 }) => {
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
@@ -68,9 +71,9 @@ const PostDialog = ({
           }}
         >
           <CommentsDisplay
-            comments={dialogPost.Comments}
-            postID={dialogPost.ID}
+            dialogPost={dialogPost}
             createComment={createComment}
+            changeLikeStatus={changeLikeStatus}
           />
         </Box>
 

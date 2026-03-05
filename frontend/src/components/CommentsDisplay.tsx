@@ -8,19 +8,25 @@ import {
   TextField,
   Divider,
   Button,
+  CardContent,
+  Typography,
+  Stack,
 } from "@mui/material";
 import { useState } from "react";
-import type { DialogComment } from "../types";
+import type { DialogPost } from "../types";
+import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { getPostTime } from "../utility";
 
 const CommentsDisplay = ({
-  comments,
-  postID,
+  dialogPost,
   createComment,
+  changeLikeStatus,
 }: {
-  comments: DialogComment[];
-  postID: number;
+  dialogPost: DialogPost;
   createComment: (PostID: number, Comment: string) => void;
+  changeLikeStatus: (arg1: number, arg2: boolean) => void;
 }) => {
   const [newComment, setNewComment] = useState("");
 
@@ -44,7 +50,7 @@ const CommentsDisplay = ({
           minHeight: 0,
         }}
       >
-        {comments.map((comment) => (
+        {dialogPost.Comments.map((comment) => (
           <ListItem key={comment.ID} alignItems="flex-start">
             <ListItemAvatar>
               <Avatar src={comment.CommentUser.ProfileImage} />
@@ -60,6 +66,31 @@ const CommentsDisplay = ({
         ))}
       </List>
 
+      <Divider sx={{ backgroundColor: "#333" }} />
+      <CardContent>
+        <Typography sx={{ wordWrap: "break-word", fontSize: 20 }}>
+          {dialogPost.Description}
+        </Typography>
+        <Stack direction="row" spacing={1} sx={{ marginTop: 1 }}>
+          <div
+            onClick={() => {
+              changeLikeStatus(dialogPost.ID, dialogPost.AlreadyLiked);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            {dialogPost.AlreadyLiked ? (
+              <FavoriteIcon />
+            ) : (
+              <FavoriteBorderIcon />
+            )}
+          </div>
+          <Typography sx={{ marginRight: 1 }}>
+            {dialogPost.LikesCount}
+          </Typography>
+          <CommentOutlinedIcon />
+          <Typography>{dialogPost.CommentsCount}</Typography>
+        </Stack>
+      </CardContent>
       <Divider sx={{ backgroundColor: "#333" }} />
 
       <Box
@@ -87,7 +118,8 @@ const CommentsDisplay = ({
 
         <Button
           onClick={() => {
-            createComment(postID, newComment);
+            createComment(dialogPost.ID, newComment);
+            setNewComment("");
           }}
           disabled={!newComment.trim()}
           sx={{
