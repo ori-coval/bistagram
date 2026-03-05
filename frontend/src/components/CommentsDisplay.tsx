@@ -17,7 +17,10 @@ import type { DialogPost } from "../types";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ShareIcon from "@mui/icons-material/Share";
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { getPostTime } from "../utility";
+import copy from "copy-to-clipboard";
 
 const CommentsDisplay = ({
   dialogPost,
@@ -29,6 +32,15 @@ const CommentsDisplay = ({
   changeLikeStatus: (arg1: number, arg2: boolean) => void;
 }) => {
   const [newComment, setNewComment] = useState("");
+  const [copiedPost, setCopiedPost] = useState(false);
+
+  const copyShareLink = () => {
+    copy(`http://85.65.146.6:12345/post/${dialogPost.ID}`);
+    setCopiedPost(true);
+    setTimeout(() => {
+      setCopiedPost(false);
+    }, 750);
+    }
 
   return (
     <Box
@@ -89,6 +101,12 @@ const CommentsDisplay = ({
           </Typography>
           <CommentOutlinedIcon />
           <Typography>{dialogPost.CommentsCount}</Typography>
+          <div
+            onClick={copyShareLink}
+            style={{ cursor: "pointer" }}
+          >
+            {copiedPost ? <DoneAllIcon /> : <ShareIcon />}
+          </div>
         </Stack>
       </CardContent>
       <Divider sx={{ backgroundColor: "#333" }} />

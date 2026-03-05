@@ -16,6 +16,7 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { useNavigate } from "react-router-dom";
 import { getPostTime } from "../utility";
 import { useState } from "react";
+import copy from "copy-to-clipboard";
 
 const PostScroll = ({
   posts,
@@ -29,12 +30,12 @@ const PostScroll = ({
   const navigate = useNavigate();
   const [copiedPostID, setCopiedPostID] = useState(-1);
 
-  const copyShareLink = async (postID: number) => {
-    await navigator.clipboard.writeText(`http://85.65.146.6:12345/post/${postID}`);
+  const copyShareLink = (postID: number) => {
+    copy(`http://85.65.146.6:12345/post/${postID}`);
     setCopiedPostID(postID);
     setTimeout(() => {
       setCopiedPostID(-1);
-    }, 1000);
+    }, 750);
   }
 
   return (
