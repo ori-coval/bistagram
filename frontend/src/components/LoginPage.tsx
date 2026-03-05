@@ -31,7 +31,7 @@ const LoginPage = () => {
         const expires = new Date();
         expires.setHours(expires.getHours() + 12);
         setCookies("access", { token: token, expires: expires.toString() });
-        navigate("/profile-page");
+        navigate("/home-page");
       });
   };
 

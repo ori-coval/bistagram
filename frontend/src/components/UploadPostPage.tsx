@@ -14,7 +14,7 @@ const UploadPostPage = () => {
     axios.
       post("http://85.65.146.6:9512/upload-post", {
         Description: description,
-        image: image,
+        Image: image,
       }, { headers: {
         Authorization: `Bearer ${cookies.access.token}`
       }})

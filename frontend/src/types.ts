@@ -5,7 +5,7 @@ export type ScrollPost = {
   LikesCount: number;
   CommentsCount: number;
   AlreadyLiked: boolean;
-  Images: string[];
+  RawImages: string[];
   User: {
     Username: string;
     ProfileImage: string;

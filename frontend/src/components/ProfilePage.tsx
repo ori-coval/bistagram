@@ -12,8 +12,8 @@ const ProfilePage = ({ username }: { username: string }) => {
   const [cookies] = useCookies(["access"]);
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
-  const [editBioDialogOpen, setEditBioDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
+  const [editBioDialogOpen, setEditBioDialogOpen] = useState(false);
 
   useEffect(() => {
     axios

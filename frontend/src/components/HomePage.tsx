@@ -1,13 +1,16 @@
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import type { ScrollPost } from "../types";
+import type { DialogPost, ScrollPost } from "../types";
 import axios from "axios";
 import PostScroll from "./PostScroll";
 import { Stack } from "@mui/material";
+import PostDialog from "./PostDialog";
 
 const HomePage = () => {
   const [cookies,] = useCookies(["access"]);
   const [posts, setPosts] = useState<ScrollPost[]>([]);
+  const [postDialogOpen, setPostDialogOpen] = useState(false);
+  const [dialogPost, setDialogPost] = useState<DialogPost>();
 
   useEffect(() => {
     axios
@@ -17,16 +20,51 @@ const HomePage = () => {
         }}
       )
       .then((response) => {
-        setPosts(response.data.Posts);
+        setPosts(response.data);
       });
   }, []);
+
+  const openPostDialog = (postID: number) => {
+    axios
+      .get(`http://85.65.146.6:9512/post/${postID}`,
+        { headers: {
+          Authorization: `Bearer ${cookies.access.token}`
+        }}
+      )
+      .then((response) => {
+        setDialogPost(response.data);
+        setPostDialogOpen(true);
+      });
+  };
+
+  const changeLikeStatus = (postID: number, alreadyLiked: boolean) => {
+    setPosts((oldPosts) => {
+      let newPosts = oldPosts.slice();
+      for (let i = 0;  i < oldPosts.length; i++) {
+        if (oldPosts[i].ID === postID && oldPosts[i].AlreadyLiked === alreadyLiked) {
+          axios
+            .post(`http://85.65.146.6:9512/post/${postID}/${alreadyLiked ? "unlike" : "like"}`, {}, 
+              { headers: {
+                Authorization: `Bearer ${cookies.access.token}`
+              }});
+          newPosts[i].AlreadyLiked = !alreadyLiked;
+          newPosts[i].LikesCount += (alreadyLiked ? -1 : 1);
+          return newPosts;
+        };
+      };
+      return oldPosts;
+    });
+  };
   
   return (
-    <Stack minHeight="100vh" direction="row" justifyContent="center">
-      <Stack direction="column">
-        <PostScroll posts={posts} />
+    <div>
+      <Stack minHeight="100vh" direction="row" justifyContent="center">
+        <Stack direction="column">
+          <PostScroll posts={posts} openPostDialog={openPostDialog} changeLikeStatus={changeLikeStatus}/>
+        </Stack>
       </Stack>
-    </Stack>
+      <PostDialog dialogPost={dialogPost ? dialogPost : { ID: 0, Description: "", Date: "", LikesCount: 0, CommentsCount: 0, AlreadyLiked: false, RawImages: [], User: {Username: "", ProfileImage: ""}, Comments: []}} open={postDialogOpen} onClose={() => {setPostDialogOpen(false)}}/>
+    </div>
   );
 };
 

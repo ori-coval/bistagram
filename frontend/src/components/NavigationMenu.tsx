@@ -28,7 +28,7 @@ const NavigationMenu = ({current_pathname}: {current_pathname: string}) => {
           icon={<HomeRoundedIcon />}
         />
         <BottomNavigationAction
-          label="Add"
+          label="Upload"
           value="/upload-post"
           icon={<AddRoundedIcon />}
         />
