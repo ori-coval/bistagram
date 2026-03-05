@@ -6,7 +6,6 @@ import axios from "axios";
 import { Stack } from "@mui/material";
 import ProfileInfo from "./ProfileInfo";
 import PostDialog from "./PostDialog";
-import EditBioDialog from "./EditBioDialog";
 import LoadingPage from "./LoadingPage";
 import EditProfilePictureDialog from "./EditProfilePictureDialog";
 
@@ -16,7 +15,7 @@ const ProfilePage = ({ username }: { username: string }) => {
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
-  const [editBioDialogOpen, setEditBioDialogOpen] = useState(false);
+  const [editingBio, setEditingBio] = useState(false);
 
   const createComment = async (postID: number, newComment: string) => {
     if (!newComment.trim()) return;
@@ -65,15 +64,6 @@ const ProfilePage = ({ username }: { username: string }) => {
       });
   };
 
-  const openEditBioDialog = () => {
-    setEditBioDialogOpen(true);
-  };
-
-
-  const closeEditBioDialog = () => {
-    setEditBioDialogOpen(false);
-  };
-
   const updateBio = (newBio: string) => {
     axios.post(
       "http://85.65.146.6:9512/user/edit-profile-bio",
@@ -95,6 +85,7 @@ const ProfilePage = ({ username }: { username: string }) => {
         },
       };
     });
+    setEditingBio(false);
   };
 
   const imageRef = useRef<HTMLInputElement>(null);
@@ -169,7 +160,9 @@ const ProfilePage = ({ username }: { username: string }) => {
                   }
             }
             isOwnProfile={username === ""}
-            onEditBio={openEditBioDialog}
+            editingBio={editingBio}
+            setEditingBio={setEditingBio}
+            updateBio={updateBio}
             onEditAvatar={openEditAvatarDialog}
             onShowFollowers={f}
             onShowFollowing={f}
@@ -202,12 +195,6 @@ const ProfilePage = ({ username }: { username: string }) => {
           setPostDialogOpen(false);
         }}
         createComment={createComment}
-      />
-      <EditBioDialog
-        open={editBioDialogOpen}
-        onClose={closeEditBioDialog}
-        currentBio={profileData ? profileData.User.Bio : ""}
-        updateBio={updateBio}
       />
       <EditProfilePictureDialog
         updateProfileImage={updateProfileImage}

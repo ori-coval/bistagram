@@ -9,14 +9,18 @@ import {
   Box,
   Button,
   Typography,
+  TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useState } from "react";
 
 const ProfileInfo = ({
   profileData,
   isOwnProfile,
-  onEditBio,
+  editingBio,
+  setEditingBio,
+  updateBio,
   onEditAvatar,
   onShowFollowers,
   onShowFollowing,
@@ -24,12 +28,16 @@ const ProfileInfo = ({
 }: {
   profileData: ProfileData;
   isOwnProfile: boolean;
-  onEditBio: () => void;
+  editingBio: boolean;
+  setEditingBio: (arg: boolean) => void;
+  updateBio: (arg: string) => void;
   onEditAvatar: () => void;
   onShowFollowers: () => void;
   onShowFollowing: () => void;
   onClickFollow: () => void;
 }) => {
+  const [newBio, setNewBio] = useState(profileData.User.Bio);
+
   return (
     <Container maxWidth="md" sx={{ marginTop: 2 }}>
       <Grid container spacing={4} alignItems="center">
@@ -99,6 +107,14 @@ const ProfileInfo = ({
             </Stack>
 
             <Box>
+              {isOwnProfile && editingBio ? (
+              <TextField
+                multiline
+                fullWidth
+                onChange={(e) => setNewBio(e.target.value)}
+                value={newBio}
+              />
+              ) : (
               <Typography
                 variant="body2"
                 whiteSpace="pre-line"
@@ -107,33 +123,40 @@ const ProfileInfo = ({
               >
                 {profileData.User.Bio}
               </Typography>
-
+              )}
               {isOwnProfile ? (
-                <>
+                (editingBio ?
                   <Button
-                    variant="text"
+                    variant="outlined"
                     size="small"
                     sx={{ mt: 1 }}
-                    onClick={onEditBio}
+                    onClick={() => {updateBio(newBio)}}
+                  >
+                    Done
+                  </Button>
+                  :
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{ mt: 1 }}
+                    onClick={() => {setEditingBio(true)}}
                   >
                     Edit Bio
                   </Button>
-                </>
+                )
               ) : (
-                <>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      marginTop: 2,
-                      backgroundColor: profileData.AlreadyFollowing
-                        ? "#25292e"
-                        : "#1976d2",
-                    }}
-                    onClick={onClickFollow}
-                  >
-                    {profileData.AlreadyFollowing ? "Following" : "Follow"}
-                  </Button>
-                </>
+                <Button
+                  variant="contained"
+                  sx={{
+                    marginTop: 2,
+                    backgroundColor: profileData.AlreadyFollowing
+                      ? "#25292e"
+                      : "#1976d2",
+                  }}
+                  onClick={onClickFollow}
+                >
+                  {profileData.AlreadyFollowing ? "Following" : "Follow"}
+                </Button>
               )}
             </Box>
             <Box></Box>
