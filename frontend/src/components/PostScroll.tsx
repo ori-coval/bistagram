@@ -33,7 +33,7 @@ const PostScroll = ({ posts, changeLikeStatus, openPostDialog }: { posts: Scroll
             }
             subheader={<>
               <Typography>
-                <div onClick={() => navigate(`/profile-page/${post.User.Username}`)} style={{ fontWeight: "bold", color: "black", cursor: "pointer" }}>{post.User.Username}</div> • {getPostTime(post)}
+                <span onClick={() => navigate(`/profile-page/${post.User.Username}`)} style={{ fontWeight: "bold", color: "black", cursor: "pointer" }}>{post.User.Username}</span> • {getPostTime(post)}
               </Typography>
               </>
             }
@@ -41,6 +41,7 @@ const PostScroll = ({ posts, changeLikeStatus, openPostDialog }: { posts: Scroll
           <CardMedia onClick={() => openPostDialog(post.ID)} sx={{ cursor: "pointer" }}
             component="img"
             image={post.RawImages[0]}
+            loading="lazy"
           />
           <CardContent>
             <Typography sx={{ wordWrap: "break-word" }}>

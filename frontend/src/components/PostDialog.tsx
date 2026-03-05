@@ -42,6 +42,7 @@ const PostDialog = ({
         >
           <img
             src={dialogPost.RawImages[0]}
+            loading="lazy"
             style={{
               maxHeight: "100%",
               maxWidth: "100%",
