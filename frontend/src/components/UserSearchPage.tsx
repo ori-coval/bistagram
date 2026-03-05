@@ -70,7 +70,6 @@ const UserSearchPage = () => {
   return (
     <Box
       sx={{
-        width: "100%",
         maxWidth: 520,
         minWidth: 260,
         mx: "auto",
