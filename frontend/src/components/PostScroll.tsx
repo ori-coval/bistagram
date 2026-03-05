@@ -12,8 +12,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import ShareIcon from "@mui/icons-material/Share";
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { useNavigate } from "react-router-dom";
 import { getPostTime } from "../utility";
+import { useState } from "react";
 
 const PostScroll = ({
   posts,
@@ -25,6 +27,15 @@ const PostScroll = ({
   openPostDialog: (arg: number) => void;
 }) => {
   const navigate = useNavigate();
+  const [copiedPostID, setCopiedPostID] = useState(-1);
+
+  const copyShareLink = async (postID: number) => {
+    await navigator.clipboard.writeText(`http://85.65.146.6:12345/post/${postID}`);
+    setCopiedPostID(postID);
+    setTimeout(() => {
+      setCopiedPostID(-1);
+    }, 1000);
+  }
 
   return (
     <Stack spacing={1}>
@@ -92,12 +103,10 @@ const PostScroll = ({
               </div>
               <Typography>{post.CommentsCount}</Typography>
               <div
-                onClick={async () => {
-                  await navigator.clipboard.writeText(`http://85.65.146.6:12345/post/${post.ID}`);
-                }}
+                onClick={() => {copyShareLink(post.ID)}}
                 style={{ cursor: "pointer" }}
               >
-                <ShareIcon />
+                {post.ID === copiedPostID ? <DoneAllIcon /> : <ShareIcon />}
               </div>
             </Stack>
           </CardContent>
