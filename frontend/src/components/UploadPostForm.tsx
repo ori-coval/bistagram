@@ -50,6 +50,7 @@ const UploadPostForm = ({
           width: { xs: "100%", sm: 400, md: 500 },
           maxWidth: 500,
           boxShadow: "none",
+          backgroundColor: "transparent",
         }}
       >
         <CardHeader></CardHeader>
