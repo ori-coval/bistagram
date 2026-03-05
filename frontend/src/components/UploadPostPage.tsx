@@ -7,7 +7,7 @@ import { Stack } from "@mui/material";
 
 const UploadPostPage = () => {
   const navigate = useNavigate();
-  const [cookies] = useCookies(["access"]);
+  const [cookies,] = useCookies(["access"]);
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
 

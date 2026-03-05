@@ -10,7 +10,7 @@ import LoadingPage from "./LoadingPage";
 import EditProfilePictureDialog from "./EditProfilePictureDialog";
 
 const ProfilePage = ({ username }: { username: string }) => {
-  const [cookies] = useCookies(["access"]);
+  const [cookies,] = useCookies(["access"]);
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
@@ -175,21 +175,7 @@ const ProfilePage = ({ username }: { username: string }) => {
         </Stack>
       </Stack>
       <PostDialog
-        dialogPost={
-          dialogPost
-            ? dialogPost
-            : {
-                ID: 0,
-                Description: "",
-                Date: "",
-                LikesCount: 0,
-                CommentsCount: 0,
-                AlreadyLiked: false,
-                RawImages: [],
-                User: { Username: "", ProfileImage: "" },
-                Comments: [],
-              }
-        }
+        dialogPost={dialogPost}
         open={postDialogOpen}
         onClose={() => {
           setPostDialogOpen(false);

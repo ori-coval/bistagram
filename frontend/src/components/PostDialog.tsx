@@ -12,7 +12,7 @@ const PostDialog = ({
   onClose,
   createComment,
 }: {
-  dialogPost: DialogPost;
+  dialogPost: DialogPost | undefined;
   open: boolean;
   onClose: () => void;
   createComment: (PostID: number, Comment: string) => void;
@@ -20,6 +20,7 @@ const PostDialog = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
+    dialogPost ?
     <div>
       <Dialog
         onClose={onClose}
@@ -87,6 +88,8 @@ const PostDialog = ({
         </IconButton>
       </Dialog>
     </div>
+    :
+    <></>
   );
 };
 

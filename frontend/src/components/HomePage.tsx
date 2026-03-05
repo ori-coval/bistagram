@@ -8,7 +8,7 @@ import PostDialog from "./PostDialog";
 import LoadingPage from "./LoadingPage";
 
 const HomePage = () => {
-  const [cookies] = useCookies(["access"]);
+  const [cookies,] = useCookies(["access"]);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<ScrollPost[]>([]);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
@@ -101,21 +101,7 @@ const HomePage = () => {
         </Stack>
       </Stack>
       <PostDialog
-        dialogPost={
-          dialogPost
-            ? dialogPost
-            : {
-                ID: 0,
-                Description: "",
-                Date: "",
-                LikesCount: 0,
-                CommentsCount: 0,
-                AlreadyLiked: false,
-                RawImages: [],
-                User: { Username: "", ProfileImage: "" },
-                Comments: [],
-              }
-        }
+        dialogPost={dialogPost}
         open={postDialogOpen}
         onClose={() => {
           setPostDialogOpen(false);
