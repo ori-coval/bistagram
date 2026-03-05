@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { Stack } from "@mui/material";
 
-const LoginPage = () => {
+const LoginPage = ({ nextPage }: { nextPage: string }) => {
   const navigate = useNavigate();
   const [, setCookies] = useCookies(["access"]);
   const [username, setUsername] = useState("");
@@ -31,7 +31,7 @@ const LoginPage = () => {
         const expires = new Date();
         expires.setHours(expires.getHours() + 12);
         setCookies("access", { token: token, expires: expires.toString() });
-        navigate("/home-page");
+        navigate(nextPage);
       });
   };
 
