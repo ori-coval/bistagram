@@ -13,7 +13,7 @@ const PostGrid = ({
         width: "80vw",
         margin: "0 auto",
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
         gap: 4,
       }}
     >
