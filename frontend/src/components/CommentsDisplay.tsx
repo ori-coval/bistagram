@@ -12,14 +12,16 @@ import {
 import { useState } from "react";
 import type { DialogComment } from "../types";
 
-const CommentsDisplay = ({ comments }: { comments: DialogComment[] }) => {
+const CommentsDisplay = ({
+  comments,
+  postID,
+  createComment,
+}: {
+  comments: DialogComment[];
+  postID: number;
+  createComment: (PostID: number, Comment: string) => void;
+}) => {
   const [newComment, setNewComment] = useState("");
-
-  const sendComment = () => {
-    if (!newComment.trim()) return;
-
-    
-  };
 
   return (
     <Box
@@ -81,7 +83,7 @@ const CommentsDisplay = ({ comments }: { comments: DialogComment[] }) => {
         />
 
         <Button
-          onClick={sendComment}
+          onClick={()=>{createComment(postID, newComment)}}
           disabled={!newComment.trim()}
           sx={{
             color: "#0095f6",

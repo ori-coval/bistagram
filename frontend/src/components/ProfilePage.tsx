@@ -1,6 +1,6 @@
 import { useCookies } from "react-cookie";
 import PostGrid from "./PostGrid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DialogPost, ProfileData } from "../types";
 import axios from "axios";
 import { Stack } from "@mui/material";
@@ -16,6 +16,24 @@ const ProfilePage = ({ username }: { username: string }) => {
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
   const [editBioDialogOpen, setEditBioDialogOpen] = useState(false);
+
+  const createComment = async (postID: number, newComment: string) => {
+    if (!newComment.trim()) return;
+    const newComments = await axios.post(
+      "http://85.65.146.6:9512/create-comment",
+      {
+        PostID: postID,
+        Comment: newComment,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.access.token}`,
+        },
+      },
+    );
+    if (!dialogPost) return;
+    setDialogPost(newComments.data);
+  };
 
   useEffect(() => {
     axios
@@ -76,6 +94,29 @@ const ProfilePage = ({ username }: { username: string }) => {
       };
     });
   };
+
+  const updateProfileImage = (newProfileImage: string) => {
+    axios.post(
+      "http://85.65.146.6:9512/user/edit-profile-picture",
+      { image: newProfileImage },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.access.token}`,
+        },
+      },
+    );
+    setProfileData((oldProfileData) => {
+      if (!oldProfileData) return oldProfileData;
+      
+      return {
+        ...oldProfileData,
+        User: {
+          ...oldProfileData.User,
+          ProfileImage: newProfileImage,
+        },
+      };
+    });
+  }
 
   const clickFollow = () => {
     axios.post(
@@ -155,7 +196,8 @@ const ProfilePage = ({ username }: { username: string }) => {
           onClose={() => {
             setPostDialogOpen(false);
           }}
-        />
+          createComment={createComment}
+      />
         <EditBioDialog
           open={editBioDialogOpen}
           onClose={closeEditBioDialog}

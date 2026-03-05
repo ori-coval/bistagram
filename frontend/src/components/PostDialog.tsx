@@ -9,10 +9,12 @@ const PostDialog = ({
   dialogPost,
   open,
   onClose,
+  createComment,
 }: {
   dialogPost: DialogPost;
   open: boolean;
   onClose: () => void;
+  createComment: (PostID: number, Comment: string) => void;
 }) => {
   return (
     <div>
@@ -59,7 +61,11 @@ const PostDialog = ({
             borderLeft: "1px solid #333",
           }}
         >
-          <CommentsDisplay comments={dialogPost.Comments} />
+          <CommentsDisplay
+            comments={dialogPost.Comments}
+            postID={dialogPost.ID}
+            createComment={createComment}
+          />
         </Box>
 
         <IconButton
