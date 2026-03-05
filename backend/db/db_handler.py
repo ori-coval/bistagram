@@ -178,7 +178,9 @@ def unlike_post(db: Session, post_id: int, user_id: int):
     db.commit()
 
 
-def create_comment(db: Session, request: CommentBase, current_user: User) -> List[Comments]:
+def create_comment(
+    db: Session, request: CommentBase, current_user: User
+) -> List[Comments]:
     if not db.query(Post).filter(Post.ID == request.PostID).first():
         raise HTTPException(404, "Post not found")
 
@@ -257,6 +259,17 @@ def get_user_followers(db: Session, username: str):
         .all()
     )
     return followers
+
+
+def get_user_following(db: Session, username: str):
+    user = get_user_by_username(db, username=username)
+    following = (
+        db.query(User)
+        .join(follows, follows.FollowedID == User.ID)
+        .filter(follows.FollowerID == user.ID)
+        .all()
+    )
+    return following
 
 
 def is_following(db: Session, username: str, current_user: User) -> bool:
