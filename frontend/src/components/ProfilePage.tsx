@@ -7,9 +7,11 @@ import { Stack } from "@mui/material";
 import ProfileInfo from "./ProfileInfo";
 import PostDialog from "./PostDialog";
 import EditBioDialog from "./EditBioDialog";
+import LoadingPage from "./LoadingPage";
 
 const ProfilePage = ({ username }: { username: string }) => {
   const [cookies] = useCookies(["access"]);
+  const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
@@ -27,6 +29,7 @@ const ProfilePage = ({ username }: { username: string }) => {
       )
       .then((response) => {
         setProfileData(response.data);
+        setLoading(false);
       });
   }, []);
 
@@ -103,62 +106,65 @@ const ProfilePage = ({ username }: { username: string }) => {
   const f = () => {};
 
   return (
-    <div>
-      <Stack direction="row" justifyContent="center">
-        <Stack direction="column">
-          <ProfileInfo
-            profileData={
-              profileData
-                ? profileData
-                : {
-                    User: { Username: "", Bio: "", ProfileImage: "" },
-                    Posts: [],
-                    AlreadyFollowing: false,
-                    FollowersCount: 0,
-                    FollowingCount: 0,
-                  }
-            }
-            isOwnProfile={username === ""}
-            onEditBio={openEditBioDialog}
-            onEditAvatar={f}
-            onShowFollowers={f}
-            onShowFollowing={f}
-            onClickFollow={clickFollow}
-          />
-          <PostGrid
-            posts={profileData ? profileData.Posts : []}
-            openPostDialog={openPostDialog}
-          />
-        </Stack>
-      </Stack>
-      <PostDialog
-        dialogPost={
-          dialogPost
-            ? dialogPost
-            : {
-                ID: 0,
-                Description: "",
-                Date: "",
-                LikesCount: 0,
-                CommentsCount: 0,
-                AlreadyLiked: false,
-                RawImages: [],
-                User: { Username: "", ProfileImage: "" },
-                Comments: [],
+    !loading ?
+      <div>
+        <Stack direction="row" justifyContent="center">
+          <Stack direction="column">
+            <ProfileInfo
+              profileData={
+                profileData
+                  ? profileData
+                  : {
+                      User: { Username: "", Bio: "", ProfileImage: "" },
+                      Posts: [],
+                      AlreadyFollowing: false,
+                      FollowersCount: 0,
+                      FollowingCount: 0,
+                    }
               }
-        }
-        open={postDialogOpen}
-        onClose={() => {
-          setPostDialogOpen(false);
-        }}
-      />
-      <EditBioDialog
-        open={editBioDialogOpen}
-        onClose={closeEditBioDialog}
-        currentBio={profileData ? profileData.User.Bio : ""}
-        updateBio={updateBio}
-      />
-    </div>
+              isOwnProfile={username === ""}
+              onEditBio={openEditBioDialog}
+              onEditAvatar={f}
+              onShowFollowers={f}
+              onShowFollowing={f}
+              onClickFollow={clickFollow}
+            />
+            <PostGrid
+              posts={profileData ? profileData.Posts : []}
+              openPostDialog={openPostDialog}
+            />
+          </Stack>
+        </Stack>
+        <PostDialog
+          dialogPost={
+            dialogPost
+              ? dialogPost
+              : {
+                  ID: 0,
+                  Description: "",
+                  Date: "",
+                  LikesCount: 0,
+                  CommentsCount: 0,
+                  AlreadyLiked: false,
+                  RawImages: [],
+                  User: { Username: "", ProfileImage: "" },
+                  Comments: [],
+                }
+          }
+          open={postDialogOpen}
+          onClose={() => {
+            setPostDialogOpen(false);
+          }}
+        />
+        <EditBioDialog
+          open={editBioDialogOpen}
+          onClose={closeEditBioDialog}
+          currentBio={profileData ? profileData.User.Bio : ""}
+          updateBio={updateBio}
+        />
+      </div>
+    :
+    <LoadingPage />
   );
 };
 

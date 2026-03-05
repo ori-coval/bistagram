@@ -5,7 +5,7 @@ import NavigationMenu from "./NavigationMenu";
 const Layout = () => {
   const location = useLocation();
   return (
-    <Box sx={{ pb: 7 }}>
+    <Box sx={{ paddingBottom: 7 }}>
       <Outlet />
       <NavigationMenu current_pathname={location.pathname}/>
     </Box>

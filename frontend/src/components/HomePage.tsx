@@ -5,9 +5,11 @@ import axios from "axios";
 import PostScroll from "./PostScroll";
 import { Stack } from "@mui/material";
 import PostDialog from "./PostDialog";
+import LoadingPage from "./LoadingPage";
 
 const HomePage = () => {
   const [cookies,] = useCookies(["access"]);
+  const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<ScrollPost[]>([]);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
@@ -21,6 +23,7 @@ const HomePage = () => {
       )
       .then((response) => {
         setPosts(response.data);
+        setLoading(false);
       });
   }, []);
 
@@ -57,6 +60,7 @@ const HomePage = () => {
   };
   
   return (
+    !loading ?
     <div>
       <Stack minHeight="100vh" direction="row" justifyContent="center">
         <Stack direction="column">
@@ -65,6 +69,8 @@ const HomePage = () => {
       </Stack>
       <PostDialog dialogPost={dialogPost ? dialogPost : { ID: 0, Description: "", Date: "", LikesCount: 0, CommentsCount: 0, AlreadyLiked: false, RawImages: [], User: {Username: "", ProfileImage: ""}, Comments: []}} open={postDialogOpen} onClose={() => {setPostDialogOpen(false)}}/>
     </div>
+    :
+    <LoadingPage />
   );
 };
 

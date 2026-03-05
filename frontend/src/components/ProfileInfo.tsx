@@ -31,7 +31,7 @@ const ProfileInfo = ({
   onClickFollow: () => void;
 }) => {
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ paddingTop: 2 }}>
       <Grid container spacing={4} alignItems="center">
         <Grid size={{ xs: 12, sm: 4 }} display="flex" justifyContent="center">
           {isOwnProfile ? (
