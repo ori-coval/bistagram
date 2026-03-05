@@ -24,5 +24,4 @@ const LoadingPage = () => {
     );
 };
 
-//<img src="/loading-icon.ico" style={{ width: 45 }}/>
 export default LoadingPage;

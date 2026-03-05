@@ -53,21 +53,3 @@ const UploadPostForm = ({
 };
 
 export default UploadPostForm;
-    
-    // <div>
-    //   {image ? <img src={image} /> : <></>}
-    //   <br />
-    //   <input
-    //     type="file"
-    //     accept="image/png, image/jpeg"
-    //     ref={imageRef}
-    //     onChange={loadImage}
-    //   />
-    //   <br />
-    //   <input
-    //     type="text"
-    //     onChange={(e) => setDescription(e.target.value)}
-    //   />
-    //   <br />
-    //   <button onClick={submitPost}>Upload</button>
-    // </div>
