@@ -9,7 +9,8 @@ import LoadingPage from "./LoadingPage";
 
 const HomePage = () => {
   const [cookies,] = useCookies(["access"]);
-  const [loading, setLoading] = useState(true);
+  const [loadingPage, setLoadingPage] = useState(true);
+  const [loadingDialog, setLoadingDialog] = useState(false);
   const [posts, setPosts] = useState<ScrollPost[]>([]);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
@@ -41,11 +42,23 @@ const HomePage = () => {
       })
       .then((response) => {
         setPosts(response.data);
-        setLoading(false);
+        setLoadingPage(false);
       });
   }, []);
 
+  useEffect(() => {
+    if (loadingDialog) {
+      let style = document.createElement("style");
+      style.id = "cursor-wait";
+      style.textContent = `* { cursor: wait !important; }`;
+      document.head.appendChild(style);
+    } else {
+      document.getElementById("cursor-wait")?.remove();
+    }
+  }, [loadingDialog]);
+
   const openPostDialog = (postID: number) => {
+    setLoadingDialog(true);
     axios
       .get(`http://85.65.146.6:9512/post/${postID}`, {
         headers: {
@@ -55,6 +68,7 @@ const HomePage = () => {
       .then((response) => {
         setDialogPost(response.data);
         setPostDialogOpen(true);
+        setLoadingDialog(false);
       });
   };
 
@@ -96,7 +110,7 @@ const HomePage = () => {
     })
   };
 
-  return !loading ? (
+  return !loadingPage ? (
     <div>
       <Stack
         minHeight="100vh"
