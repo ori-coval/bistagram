@@ -195,7 +195,7 @@ def create_comment(
     db.add(comment)
     db.commit()
     db.refresh(comment)
-    return get_post_display(db, request.PostID)
+    return get_post_display(db, request.PostID, current_user)
 
 
 def follow_user(db: Session, request: followBase, current_user: User):
@@ -305,7 +305,7 @@ def get_following_count(db: Session, username: str) -> int:
     return following_count
 
 
-def get_post_display(db: Session, post_id: int):
+def get_post_display(db: Session, post_id: int, current_user: User):
     post = (
         db.query(Post)
         .options(
@@ -328,7 +328,7 @@ def get_post_display(db: Session, post_id: int):
 
     del post.Images
     post.RawImages = Images
-    post.AlreadyLiked = any(like.UserID == post.User.ID for like in post.Likes)
+    post.AlreadyLiked = any(like.UserID == current_user.ID for like in post.Likes)
     post.CommentsCount = len(post.Comments)
     post.LikesCount = len(post.Likes)
     del post.Likes

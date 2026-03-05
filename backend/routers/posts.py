@@ -28,5 +28,9 @@ def create_post(
 
 
 @router.get("/post/{post_id}")
-def get_post(post_id: int, db: Session = Depends(get_db)):
-    return db_handler.get_post_display(db, post_id)
+def get_post(
+    post_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return db_handler.get_post_display(db, post_id, current_user)
