@@ -68,6 +68,7 @@ const UploadPostForm = ({
       </Button>
       <br />
       <TextField
+        label="Description"
         fullWidth
         multiline
         onChange={(e) => setDescription(e.target.value)}
