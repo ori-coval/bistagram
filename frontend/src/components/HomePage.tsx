@@ -8,7 +8,7 @@ import PostDialog from "./PostDialog";
 import LoadingPage from "./LoadingPage";
 
 const HomePage = () => {
-  const [cookies,] = useCookies(["access"]);
+  const [cookies] = useCookies(["access"]);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<ScrollPost[]>([]);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
@@ -84,10 +84,14 @@ const HomePage = () => {
     });
   };
 
-  return (
-    !loading ?
+  return !loading ? (
     <div>
-      <Stack minHeight="100vh" direction="row" justifyContent="center">
+      <Stack
+        minHeight="100vh"
+        direction="row"
+        justifyContent="center"
+        sx={{ px: 1 }}
+      >
         <Stack direction="column">
           <PostScroll
             posts={posts}
@@ -119,7 +123,7 @@ const HomePage = () => {
         createComment={createComment}
       />
     </div>
-    :
+  ) : (
     <LoadingPage />
   );
 };
