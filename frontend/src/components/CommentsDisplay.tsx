@@ -29,7 +29,7 @@ const CommentsDisplay = ({
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
+        height: "100%",
         backgroundColor: "#212328",
         overflow: "hidden",
       }}

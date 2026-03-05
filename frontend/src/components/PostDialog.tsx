@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Box } from "@mui/material";
 import type { DialogPost } from "../types";
 import CommentsDisplay from "./CommentsDisplay";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const PostDialog = ({
   dialogPost,
@@ -16,6 +17,8 @@ const PostDialog = ({
   onClose: () => void;
   createComment: (PostID: number, Comment: string) => void;
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <div>
       <Dialog
@@ -24,12 +27,12 @@ const PostDialog = ({
         maxWidth={false}
         PaperProps={{
           sx: {
-            height: "90vh",
-            width: "90vw",
+            height: "90%",
+            width: "90%",
             backgroundColor: "#212328",
             display: "flex",
-            flexDirection: "row",
-            overflow: "hidden",
+            flexDirection: isMobile ? "column" : "row",
+            overflow: "auto",
           },
         }}
       >
@@ -46,6 +49,7 @@ const PostDialog = ({
             src={dialogPost.RawImages[0]}
             loading="lazy"
             style={{
+              minHeight: 300,
               maxHeight: "100%",
               maxWidth: "100%",
               objectFit: "contain",
@@ -55,6 +59,7 @@ const PostDialog = ({
 
         <Box
           sx={{
+            minHeight: 300,
             flex: 3,
             display: "flex",
             flexDirection: "column",
