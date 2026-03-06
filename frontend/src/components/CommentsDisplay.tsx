@@ -39,7 +39,7 @@ const CommentsDisplay = ({
   const [copiedPost, setCopiedPost] = useState(false);
 
   const copyShareLink = () => {
-    copy(`${FRONTEND_URL}}/post/${dialogPost.ID}`);
+    copy(`${FRONTEND_URL}/post/${dialogPost.ID}`);
     setCopiedPost(true);
     setTimeout(() => {
       setCopiedPost(false);
