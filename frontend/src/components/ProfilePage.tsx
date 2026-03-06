@@ -13,7 +13,8 @@ import { BACKEND_URL } from "../constants";
 
 const ProfilePage = ({ username }: { username: string }) => {
   const [cookies] = useCookies(["access"]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(0);
+  const [usernames, setUsernames] = useState<string[]>([]);
   const [profileData, setProfileData] = useState<ProfileData>();
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
@@ -54,7 +55,17 @@ const ProfilePage = ({ username }: { username: string }) => {
       )
       .then((response) => {
         setProfileData(response.data);
-        setLoading(false);
+        setLoading((prev) => prev + 1);
+      });
+    axios
+      .get(`${BACKEND_URL}/users/usernames`, {
+        headers: {
+          Authorization: `Bearer ${cookies.access.token}`,
+        },
+      })
+      .then((response) => {
+        setUsernames(response.data);
+        setLoading((prev) => prev + 1);
       });
   }, []);
 
@@ -183,7 +194,7 @@ const ProfilePage = ({ username }: { username: string }) => {
     });
   };
 
-  return !loading ? (
+  return (loading >= 2) ? (
     <div>
       <Stack direction="row" justifyContent="center">
         <Stack direction="column">
@@ -231,6 +242,7 @@ const ProfilePage = ({ username }: { username: string }) => {
                 Comments: [],
               }
         }
+        usernames={usernames}
         changeLikeStatus={changeLikeStatus}
         open={postDialogOpen}
         onClose={() => {
