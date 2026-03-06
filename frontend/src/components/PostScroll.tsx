@@ -18,6 +18,7 @@ import { getPostTime } from "../utility";
 import { useState } from "react";
 import copy from "copy-to-clipboard";
 
+import { FRONTEND_URL } from "../constants";
 const PostScroll = ({
   posts,
   changeLikeStatus,
@@ -31,7 +32,7 @@ const PostScroll = ({
   const [copiedPostID, setCopiedPostID] = useState(-1);
 
   const copyShareLink = (postID: number) => {
-    copy(`http://85.65.146.6:12345/post/${postID}`);
+    copy(`${FRONTEND_URL}/post/${postID}`);
     setCopiedPostID(postID);
     setTimeout(() => {
       setCopiedPostID(-1);

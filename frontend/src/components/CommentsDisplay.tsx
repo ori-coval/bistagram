@@ -21,6 +21,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { getPostTime } from "../utility";
 import copy from "copy-to-clipboard";
+import { FRONTEND_URL } from "../constants";
 
 const CommentsDisplay = ({
   dialogPost,
@@ -35,7 +36,7 @@ const CommentsDisplay = ({
   const [copiedPost, setCopiedPost] = useState(false);
 
   const copyShareLink = () => {
-    copy(`http://85.65.146.6:12345/post/${dialogPost.ID}`);
+    copy(`${FRONTEND_URL}}/post/${dialogPost.ID}`);
     setCopiedPost(true);
     setTimeout(() => {
       setCopiedPost(false);
