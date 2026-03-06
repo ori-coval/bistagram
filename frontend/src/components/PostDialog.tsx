@@ -8,12 +8,14 @@ import { useMediaQuery, useTheme } from "@mui/material";
 
 const PostDialog = ({
   dialogPost,
+  usernames,
   changeLikeStatus,
   open,
   onClose,
   createComment,
 }: {
   dialogPost: DialogPost;
+  usernames: string[];
   changeLikeStatus: (arg1: number, arg2: boolean) => void;
   open: boolean;
   onClose: () => void;
@@ -72,6 +74,7 @@ const PostDialog = ({
         >
           <CommentsDisplay
             dialogPost={dialogPost}
+            usernames={usernames}
             createComment={createComment}
             changeLikeStatus={changeLikeStatus}
           />

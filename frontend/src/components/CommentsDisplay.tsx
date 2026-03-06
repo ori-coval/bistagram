@@ -22,13 +22,16 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { getPostTime } from "../utility";
 import copy from "copy-to-clipboard";
 import { FRONTEND_URL } from "../constants";
+import PostDescription from "./PostDescription";
 
 const CommentsDisplay = ({
   dialogPost,
+  usernames,
   createComment,
   changeLikeStatus,
 }: {
   dialogPost: DialogPost;
+  usernames: string[];
   createComment: (PostID: number, Comment: string) => void;
   changeLikeStatus: (arg1: number, arg2: boolean) => void;
 }) => {
@@ -81,9 +84,7 @@ const CommentsDisplay = ({
 
       <Divider sx={{ backgroundColor: "#333" }} />
       <CardContent>
-        <Typography sx={{ wordWrap: "break-word", fontSize: 20 }}>
-          {dialogPost.Description}
-        </Typography>
+        <PostDescription description={dialogPost.Description} usernames={usernames}/>
         <Stack direction="row" spacing={1} sx={{ marginTop: 1 }}>
           <div
             onClick={() => {

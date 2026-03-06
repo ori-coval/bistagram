@@ -47,7 +47,7 @@ const HomePage = () => {
         setLoadingPage((prev) => prev + 1);
       });
     axios
-      .get(`http://85.65.146.6:9512/self/users/usernames`, {
+      .get(`${BACKEND_URL}/users/usernames`, {
         headers: {
           Authorization: `Bearer ${cookies.access.token}`,
         },
@@ -155,6 +155,7 @@ const HomePage = () => {
                 Comments: [],
               }
         }
+        usernames={usernames}
         changeLikeStatus={changeLikeStatus}
         open={postDialogOpen}
         onClose={() => {
