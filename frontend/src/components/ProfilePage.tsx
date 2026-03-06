@@ -9,6 +9,7 @@ import PostDialog from "./PostDialog";
 import LoadingPage from "./LoadingPage";
 import EditProfilePictureDialog from "./EditProfilePictureDialog";
 import FollowDialog from "./FollowDialog";
+import { BACKEND_URL } from "../constants";
 
 const ProfilePage = ({ username }: { username: string }) => {
   const [cookies] = useCookies(["access"]);
@@ -26,7 +27,7 @@ const ProfilePage = ({ username }: { username: string }) => {
   const createComment = async (postID: number, newComment: string) => {
     if (!newComment.trim()) return;
     const newComments = await axios.post(
-      "http://85.65.146.6:9512/create-comment",
+      BACKEND_URL + "/create-comment",
       {
         PostID: postID,
         Comment: newComment,
@@ -44,7 +45,7 @@ const ProfilePage = ({ username }: { username: string }) => {
   useEffect(() => {
     axios
       .get(
-        `http://85.65.146.6:9512/${username === "" ? "self" : `user/${username}`}/profile`,
+        `${BACKEND_URL}/${username === "" ? "self" : `user/${username}`}/profile`,
         {
           headers: {
             Authorization: `Bearer ${cookies.access.token}`,
@@ -59,7 +60,7 @@ const ProfilePage = ({ username }: { username: string }) => {
 
   const openPostDialog = (postID: number) => {
     axios
-      .get(`http://85.65.146.6:9512/post/${postID}`, {
+      .get(`${BACKEND_URL}/post/${postID}`, {
         headers: {
           Authorization: `Bearer ${cookies.access.token}`,
         },
@@ -72,7 +73,7 @@ const ProfilePage = ({ username }: { username: string }) => {
 
   const updateBio = (newBio: string) => {
     axios.post(
-      "http://85.65.146.6:9512/user/edit-profile-bio",
+      BACKEND_URL + "/user/edit-profile-bio",
       { Bio: newBio },
       {
         headers: {
@@ -102,7 +103,7 @@ const ProfilePage = ({ username }: { username: string }) => {
 
   const updateProfileImage = (newProfileImage: string) => {
     axios.post(
-      "http://85.65.146.6:9512/user/edit-profile-picture",
+      BACKEND_URL + "/user/edit-profile-picture",
       { image: newProfileImage },
       {
         headers: {
@@ -126,8 +127,8 @@ const ProfilePage = ({ username }: { username: string }) => {
   const clickFollow = () => {
     axios.post(
       profileData?.AlreadyFollowing
-        ? "http://85.65.146.6:9512/unfollow"
-        : "http://85.65.146.6:9512/follow",
+        ? BACKEND_URL + "/unfollow"
+        : BACKEND_URL + "$/follow",
       { Username: username },
       {
         headers: {
@@ -164,7 +165,7 @@ const ProfilePage = ({ username }: { username: string }) => {
       let newPosts = { ...oldPost };
       if (oldPost?.ID === postID && oldPost.AlreadyLiked === alreadyLiked) {
         axios.post(
-          `http://85.65.146.6:9512/post/${postID}/${alreadyLiked ? "unlike" : "like"}`,
+          `${BACKEND_URL}/post/${postID}/${alreadyLiked ? "unlike" : "like"}`,
           {},
           {
             headers: {
@@ -185,7 +186,7 @@ const ProfilePage = ({ username }: { username: string }) => {
   return !loading ? (
     <div>
       <Stack direction="row" justifyContent="center">
-        <Stack direction="column" >
+        <Stack direction="column">
           <ProfileInfo
             profileData={
               profileData
@@ -207,7 +208,7 @@ const ProfilePage = ({ username }: { username: string }) => {
             onShowFollowing={openFollowingDialog}
             onClickFollow={clickFollow}
           />
-          <p style={{marginTop: 10}}/>
+          <p style={{ marginTop: 10 }} />
           <PostGrid
             posts={profileData ? profileData.Posts : []}
             openPostDialog={openPostDialog}

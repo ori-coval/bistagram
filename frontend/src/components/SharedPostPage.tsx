@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { DialogPost } from "../types";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../constants";
 
 const SharedPostPage = ({ postID }: { postID: number }) => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const SharedPostPage = ({ postID }: { postID: number }) => {
 
   useEffect(() => {
     axios
-      .get(`http://85.65.146.6:9512/post/${postID}`, {
+      .get(`${BACKEND_URL}/post/${postID}`, {
         headers: {
           Authorization: `Bearer ${cookies.access.token}`,
         },
@@ -32,7 +33,7 @@ const SharedPostPage = ({ postID }: { postID: number }) => {
   const createComment = async (postID: number, newComment: string) => {
     if (!newComment.trim()) return;
     const newComments = await axios.post(
-      "http://85.65.146.6:9512/create-comment",
+      BACKEND_URL + "/create-comment",
       {
         PostID: postID,
         Comment: newComment,
@@ -53,7 +54,7 @@ const SharedPostPage = ({ postID }: { postID: number }) => {
       let newPosts = { ...oldPost };
       if (oldPost?.ID === postID && oldPost.AlreadyLiked === alreadyLiked) {
         axios.post(
-          `http://85.65.146.6:9512/post/${postID}/${alreadyLiked ? "unlike" : "like"}`,
+          `${BACKEND_URL}/post/${postID}/${alreadyLiked ? "unlike" : "like"}`,
           {},
           {
             headers: {

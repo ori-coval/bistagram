@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import UploadPostForm from "./UploadPostForm";
 import { Stack } from "@mui/material";
+import { BACKEND_URL } from "../constants";
 
 const UploadPostPage = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const UploadPostPage = () => {
     }
     axios
       .post(
-        "http://85.65.146.6:9512/upload-post",
+        BACKEND_URL + "/upload-post",
         {
           Description: description,
           Image: image,

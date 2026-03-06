@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { Stack } from "@mui/material";
+import { BACKEND_URL } from "../constants";
 
 const LoginPage = ({ nextPage }: { nextPage: string }) => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const LoginPage = ({ nextPage }: { nextPage: string }) => {
   const submitLogin = () => {
     axios
       .post(
-        "http://85.65.146.6:9512/login",
+        BACKEND_URL + "/login",
         {
           username: username,
           password: password,

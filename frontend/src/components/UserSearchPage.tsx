@@ -12,6 +12,7 @@ import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
 import type { User } from "../types";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../constants";
 
 const filter = createFilterOptions<User>();
 
@@ -55,7 +56,7 @@ const UserSearchPage = () => {
     setLoading(true);
 
     axios
-      .get<User[]>("http://85.65.146.6:9512/users/search", {
+      .get<User[]>(BACKEND_URL + "/users/search", {
         params: { search_text: searchValue },
         headers: {
           Authorization: cookies?.access?.token

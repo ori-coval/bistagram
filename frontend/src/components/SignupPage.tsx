@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SignupForm from "./SignupForm";
 import { Stack } from "@mui/material";
+import { BACKEND_URL } from "../constants";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,8 @@ const SignupPage = () => {
     }
     axios
       .post(
-        "http://85.65.146.6:9512/signup",
+        BACKEND_URL + 
+        "/signup",
         {
           username: username,
           password: password,

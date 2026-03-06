@@ -6,6 +6,7 @@ import PostScroll from "./PostScroll";
 import { Stack } from "@mui/material";
 import PostDialog from "./PostDialog";
 import LoadingPage from "./LoadingPage";
+import { BACKEND_URL } from "../constants";
 
 const HomePage = () => {
   const [cookies,] = useCookies(["access"]);
@@ -18,7 +19,7 @@ const HomePage = () => {
   const createComment = async (postID: number, newComment: string) => {
     if (!newComment.trim()) return;
     const newComments = await axios.post(
-      "http://85.65.146.6:9512/create-comment",
+      BACKEND_URL + "/create-comment",
       {
         PostID: postID,
         Comment: newComment,
@@ -35,7 +36,7 @@ const HomePage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://85.65.146.6:9512/self/home/posts`, {
+      .get(`${BACKEND_URL}/self/home/posts`, {
         headers: {
           Authorization: `Bearer ${cookies.access.token}`,
         },
@@ -60,7 +61,7 @@ const HomePage = () => {
   const openPostDialog = (postID: number) => {
     setLoadingDialog(true);
     axios
-      .get(`http://85.65.146.6:9512/post/${postID}`, {
+      .get(`${BACKEND_URL}/post/${postID}`, {
         headers: {
           Authorization: `Bearer ${cookies.access.token}`,
         },
@@ -81,7 +82,7 @@ const HomePage = () => {
           oldPosts[i].AlreadyLiked === alreadyLiked
         ) {
           axios.post(
-            `http://85.65.146.6:9512/post/${postID}/${alreadyLiked ? "unlike" : "like"}`,
+            `${BACKEND_URL}/post/${postID}/${alreadyLiked ? "unlike" : "like"}`,
             {},
             {
               headers: {
