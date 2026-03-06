@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from auth.oauth2 import get_current_user
+import image_utils
 from db.models import User
 from routers.posts import get_user_posts
 from db import db_handler
@@ -46,7 +47,7 @@ def get_user_profile(
 
 
 @router.get("/self/profile")
-def get_user_homepage(
+def get_current_user_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -61,9 +62,10 @@ def edit_profile_picture(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db_handler.update_user_profile_picture(
-        db, current_user.Username, request.image
+    image = image_utils.resize_base64_image(
+        request.image, max_size=(400, 400), quality=70
     )
+    return db_handler.update_user_profile_picture(db, current_user.Username, image)
 
 
 @router.post("/user/edit-profile-bio")
@@ -74,9 +76,15 @@ def edit_profile_bio(
 ):
     return db_handler.update_user_bio(db, current_user.Username, request.Bio)
 
+
 @router.get("/self/home/posts")
 def get_user_homepage_posts(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     return db_handler.get_following_posts(db, current_user)
+
+
+@router.get("/users/usernames")
+def get_all_usernames(db: Session = Depends(get_db)):
+    return db_handler.get_all_usernames(db)

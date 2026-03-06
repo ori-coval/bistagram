@@ -5,7 +5,7 @@ export type ScrollPost = {
   LikesCount: number;
   CommentsCount: number;
   AlreadyLiked: boolean;
-  RawImages: string[];
+  ImageCount?: number;
   User: {
     Username: string;
     ProfileImage: string;
@@ -20,7 +20,11 @@ export type ProfileUser = {
 
 export type ProfilePost = {
   ID: number;
-  RawImages: string[];
+  Description: string;
+  Date : string;
+  ImageCount: number;
+  LikesCount: number;
+  CommentsCount: number;
 };
 
 export type ProfileData = {
@@ -55,12 +59,11 @@ export type DialogPost = {
     ProfileImage: string;
   };
   Comments: DialogComment[];
-}
+};
 
 export type User = {
   ID: number;
   Username: string;
   ProfileImage: string;
   Bio: string;
-}
-
+};

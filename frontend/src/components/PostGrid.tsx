@@ -1,4 +1,5 @@
 import type { ProfilePost } from "../types";
+import LazyImage from "./LazyImage";
 
 const PostGrid = ({
   posts,
@@ -23,25 +24,13 @@ const PostGrid = ({
           style={{
             position: "relative",
             width: "100%",
-            paddingTop: "100%",
+            aspectRatio: "1/1",
             overflow: "hidden",
             cursor: "pointer",
           }}
           onClick={() => openPostDialog(post.ID)}
         >
-          <img
-            src={post.RawImages[0]}
-            loading="lazy"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 4
-            }}
-          />
+          <LazyImage postID={post.ID} alt={post.Description ?? "post image"} />
         </div>
       ))}
     </div>

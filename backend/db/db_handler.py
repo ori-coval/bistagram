@@ -2,13 +2,13 @@ from datetime import datetime
 from hmac import new
 from turtle import pos
 from fastapi import HTTPException, status
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, load_only
 from db.schemas import CommentBase, PostBase, followBase
 from .models import Comments, Likes, Post, PostImage, User, follows
 from sqlalchemy.orm.session import Session
 from auth.hashing import get_password_hash
 from typing import List
-from sqlalchemy import func
+from sqlalchemy import and_, func, select
 
 
 def create_post(db: Session, request: PostBase, current_user: User) -> Post:
@@ -63,29 +63,47 @@ def get_posts_likes(db: Session, post_id: int) -> List[Likes]:
     return post.Likes
 
 
-def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
-    user_id = get_user_by_username(db, username=username).ID
-    posts = (
-        db.query(Post)
-        .options(
-            joinedload(Post.Images), joinedload(Post.Likes), joinedload(Post.Comments)
-        )
-        .filter(Post.UserID == user_id)
-        .order_by(Post.Date.desc())
-        .all()
-    )
-    for post in posts:
-        Images = []
-        for image in post.Images:
-            Images.append(image.Image)
+def get_all_posts_by_user(db: Session, username: str) -> List[dict]:
+    user = get_user_by_username(db, username)
 
-        del post.Images
-        post.RawImages = Images
-        post.likes_count = len(post.Likes)
-        post.comments_count = len(post.Comments)
-        del post.Likes
-        del post.Comments
-    return posts
+    images_count_subquery = (
+        select(func.count(PostImage.ID))
+        .where(PostImage.PostID == Post.ID)
+        .scalar_subquery()
+    )
+    likes_count_subquery = (
+        select(func.count(Likes.ID)).where(Likes.PostID == Post.ID).scalar_subquery()
+    )
+    comments_count_subquery = (
+        select(func.count(Comments.ID))
+        .where(Comments.PostID == Post.ID)
+        .scalar_subquery()
+    )
+
+    raw_posts = (
+        db.query(
+            Post,
+            images_count_subquery.label("image_count"),
+            likes_count_subquery.label("likes_count"),
+            comments_count_subquery.label("comments_count"),
+        )
+        .filter(Post.UserID == user.ID)
+        .order_by(Post.Date.desc())
+    ).all()
+
+    results = []
+    for post, image_count, likes_count, comments_count in raw_posts:
+        results.append(
+            {
+                "ID": post.ID,
+                "Description": post.Description,
+                "Date": post.Date,
+                "ImageCount": int(image_count or 0),
+                "LikesCount": int(likes_count or 0),
+                "CommentsCount": int(comments_count or 0),
+            }
+        )
+    return results
 
 
 def get_user_by_username(db: Session, username: str) -> User:
@@ -337,37 +355,88 @@ def get_post_display(db: Session, post_id: int, current_user: User):
 
 
 def get_following_posts(db: Session, current_user: User):
-    db.query(follows).filter(follows.FollowerID == current_user.ID).all()
     following = db.query(follows).filter(follows.FollowerID == current_user.ID).all()
     following_ids = [follow.FollowedID for follow in following]
-    posts = (
-        db.query(Post)
-        .options(joinedload(Post.Images), joinedload(Post.User))
-        .filter(Post.UserID.in_(following_ids))
-        .order_by(Post.Date.desc())
-        .all()
+    if not following_ids:
+        return []
+
+    images_count_subquery = (
+        select(func.count(PostImage.ID))
+        .where(PostImage.PostID == Post.ID)
+        .scalar_subquery()
+    )
+    likes_count_subquery = (
+        select(func.count(Likes.ID)).where(Likes.PostID == Post.ID).scalar_subquery()
+    )
+    comments_count_subquery = (
+        select(func.count(Comments.ID))
+        .where(Comments.PostID == Post.ID)
+        .scalar_subquery()
     )
 
-    for post in posts:
-        if post.User.ID:
-            del post.User.ID
-        if post.User.Bio:
-            del post.User.Bio
-        if post.User.HashedPassword:
-            del post.User.HashedPassword
-        del post.UserID
+    already_liked_subquery = (
+        select(func.count(Likes.ID))
+        .where(and_(Likes.PostID == Post.ID, Likes.UserID == current_user.ID))
+        .scalar_subquery()
+    )
 
-        Images = []
-        for image in post.Images:
-            Images.append(image.Image)
+    raw_posts = (
+        db.query(
+            Post,
+            images_count_subquery.label("image_count"),
+            likes_count_subquery.label("likes_count"),
+            comments_count_subquery.label("comments_count"),
+            already_liked_subquery.label("already_liked_count"),
+        )
+        .join(User, User.ID == Post.UserID)
+        .filter(Post.UserID.in_(following_ids))
+        .order_by(Post.Date.desc())
+    ).all()
 
-        del post.Images
-        post.RawImages = Images
+    posts = []
+    for (
+        post,
+        image_count,
+        likes_count,
+        comments_count,
+        already_liked_count,
+    ) in raw_posts:
+        user = (
+            db.query(User)
+            .options(load_only(User.Username, User.ProfileImage))
+            .filter(User.ID == post.UserID)
+            .one()
+        )
 
-        post.LikesCount = len(post.Likes)
-        post.CommentsCount = len(post.Comments)
-        post.AlreadyLiked = any(like.UserID == current_user.ID for like in post.Likes)
-        del post.Likes
-        del post.Comments
+        posts.append(
+            {
+                "ID": post.ID,
+                "Description": post.Description,
+                "Date": post.Date,
+                "User": {"Username": user.Username, "ProfileImage": user.ProfileImage},
+                "ImageCount": int(image_count or 0),
+                "LikesCount": int(likes_count or 0),
+                "CommentsCount": int(comments_count or 0),
+                "AlreadyLiked": bool(
+                    already_liked_count and int(already_liked_count) > 0
+                ),
+            }
+        )
 
     return posts
+
+
+def get_post_images(db: Session, post_id: int) -> Post:
+    post = (
+        db.query(Post)
+        .options(joinedload(Post.Images))
+        .filter(Post.ID == post_id)
+        .first()
+    )
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+
+def get_all_usernames(db: Session) -> List[str]:
+    return list(db.execute(select(User.Username)).scalars().all())

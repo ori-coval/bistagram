@@ -14,6 +14,7 @@ setup(
         "aiofiles",
         "python-jose",
         "pymysql",
-        "cryptography"
+        "cryptography",
+        "Pillow",
     ],
 )

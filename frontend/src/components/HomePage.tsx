@@ -119,7 +119,7 @@ const HomePage = () => {
         justifyContent="center"
         sx={{ px: 1 }}
       >
-        <Stack direction="column">
+        <Stack direction="column" sx={{width: "100%", maxWidth: 500}}>
           <PostScroll
             posts={posts}
             openPostDialog={openPostDialog}
