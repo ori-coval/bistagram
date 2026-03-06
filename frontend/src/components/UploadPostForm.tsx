@@ -5,6 +5,7 @@ import {
   CardMedia,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useRef } from "react";
 
@@ -13,15 +14,20 @@ const UploadPostForm = ({
   setImage,
   setDescription,
   submitPost,
+  uploadError,
+  setUploadError,
 }: {
   image: string;
   setImage: (arg: string) => void;
   setDescription: (arg: string) => void;
   submitPost: () => void;
+  uploadError: string;
+  setUploadError: (arg: string) => void;
 }) => {
   const imageRef = useRef<HTMLInputElement>(null);
 
   const loadImage = () => {
+    setUploadError("");
     if (!imageRef.current || !imageRef.current.files) {
       return;
     }
@@ -53,7 +59,6 @@ const UploadPostForm = ({
           backgroundColor: "transparent",
         }}
       >
-        <CardHeader></CardHeader>
         <CardMedia
           component="img"
           src={image}
@@ -80,8 +85,20 @@ const UploadPostForm = ({
         label="Description"
         fullWidth
         multiline
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => {
+          setDescription(e.target.value);
+          setUploadError("");
+        }}
       />
+      <Typography
+        variant="body2"
+        color="red"
+        fontSize={16}
+        hidden={uploadError == ""}
+        sx={{ textAlign: "center" }}
+      >
+        {uploadError}.
+      </Typography>
       <br />
       <Button variant="contained" onClick={submitPost}>
         Upload

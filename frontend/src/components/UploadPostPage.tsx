@@ -46,9 +46,11 @@ const UploadPostPage = () => {
   const [cookies] = useCookies(["access"]);
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
+  const [uploadError, setUploadError] = useState("");
 
   const submitPost = async () => {
     if (!description || !image) {
+      setUploadError("Please fill in all fields.");
       return;
     }
 
@@ -83,6 +85,8 @@ const UploadPostPage = () => {
         setImage={setImage}
         setDescription={setDescription}
         submitPost={submitPost}
+        uploadError={uploadError}
+        setUploadError={setUploadError}
       />
     </Stack>
   );
