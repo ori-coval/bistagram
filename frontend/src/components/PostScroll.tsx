@@ -19,13 +19,16 @@ import copy from "copy-to-clipboard";
 import { useCookies } from "react-cookie";
 import LazyImage from "./LazyImage";
 import { FRONTEND_URL } from "../constants";
+import PostDescription from "./PostDescription";
 
 const PostScroll = ({
   posts,
+  usernames,
   changeLikeStatus,
   openPostDialog,
 }: {
   posts: ScrollPost[];
+  usernames: string[];
   changeLikeStatus: (arg1: number, arg2: boolean) => void;
   openPostDialog: (arg: number) => void;
 }) => {
@@ -87,9 +90,7 @@ const PostScroll = ({
           </div>
 
           <CardContent>
-            <Typography sx={{ wordWrap: "break-word" }}>
-              {post.Description}
-            </Typography>
+            <PostDescription description={post.Description} usernames={usernames}/>
             <Stack direction="row" spacing={1} sx={{ marginTop: 1 }}>
               <div
                 onClick={() => {

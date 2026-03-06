@@ -10,9 +10,10 @@ import { BACKEND_URL } from "../constants";
 
 const HomePage = () => {
   const [cookies,] = useCookies(["access"]);
-  const [loadingPage, setLoadingPage] = useState(true);
+  const [loadingPage, setLoadingPage] = useState(0);
   const [loadingDialog, setLoadingDialog] = useState(false);
   const [posts, setPosts] = useState<ScrollPost[]>([]);
+  const [usernames, setUsernames] = useState<string[]>([]);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [dialogPost, setDialogPost] = useState<DialogPost>();
 
@@ -43,7 +44,17 @@ const HomePage = () => {
       })
       .then((response) => {
         setPosts(response.data);
-        setLoadingPage(false);
+        setLoadingPage((prev) => prev + 1);
+      });
+    axios
+      .get(`http://85.65.146.6:9512/self/users/usernames`, {
+        headers: {
+          Authorization: `Bearer ${cookies.access.token}`,
+        },
+      })
+      .then((response) => {
+        setUsernames(response.data);
+        setLoadingPage((prev) => prev + 1);
       });
   }, []);
 
@@ -111,7 +122,7 @@ const HomePage = () => {
     })
   };
 
-  return !loadingPage ? (
+  return (loadingPage >= 2) ? (
     <div>
       <Stack
         minHeight="100vh"
@@ -122,6 +133,7 @@ const HomePage = () => {
         <Stack direction="column" sx={{width: "100%", maxWidth: 500}}>
           <PostScroll
             posts={posts}
+            usernames={usernames}
             openPostDialog={openPostDialog}
             changeLikeStatus={changeLikeStatus}
           />
