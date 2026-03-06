@@ -18,7 +18,7 @@ import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { getPostTime } from "../utility";
 import copy from "copy-to-clipboard";
 import { FRONTEND_URL } from "../constants";
@@ -44,7 +44,7 @@ const CommentsDisplay = ({
     setTimeout(() => {
       setCopiedPost(false);
     }, 750);
-    }
+  };
 
   return (
     <Box
@@ -75,8 +75,8 @@ const CommentsDisplay = ({
             <ListItemText
               primary={`${comment.CommentUser.Username} • ${getPostTime(comment.Date)}`}
               secondary={comment.Comment}
-              primaryTypographyProps={{ color: "white" }}
-              secondaryTypographyProps={{ color: "#aaa" }}
+              primaryTypographyProps={{ color: "#aaa", variant: "body2" }}
+              secondaryTypographyProps={{ color: "white", variant: "body1" }}
             />
           </ListItem>
         ))}
@@ -84,7 +84,10 @@ const CommentsDisplay = ({
 
       <Divider sx={{ backgroundColor: "#333" }} />
       <CardContent>
-        <PostDescription description={dialogPost.Description} usernames={usernames}/>
+        <PostDescription
+          description={dialogPost.Description}
+          usernames={usernames}
+        />
         <Stack direction="row" spacing={1} sx={{ marginTop: 1 }}>
           <div
             onClick={() => {
@@ -103,10 +106,7 @@ const CommentsDisplay = ({
           </Typography>
           <CommentOutlinedIcon />
           <Typography>{dialogPost.CommentsCount}</Typography>
-          <div
-            onClick={copyShareLink}
-            style={{ cursor: "pointer" }}
-          >
+          <div onClick={copyShareLink} style={{ cursor: "pointer" }}>
             {copiedPost ? <DoneAllIcon /> : <ShareIcon />}
           </div>
         </Stack>
