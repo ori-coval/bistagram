@@ -53,7 +53,7 @@ const CommentsDisplay = ({
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        backgroundColor: "#212328",
+        backgroundColor: "white",
         overflow: "hidden",
       }}
     >
@@ -75,8 +75,7 @@ const CommentsDisplay = ({
             <ListItemText
               primary={`${comment.CommentUser.Username} • ${getPostTime(comment.Date)}`}
               secondary={comment.Comment}
-              primaryTypographyProps={{ color: "#aaa", variant: "body2" }}
-              secondaryTypographyProps={{ color: "white", variant: "body1" }}
+              sx={{ color: "black" }}
             />
           </ListItem>
         ))}
@@ -131,7 +130,7 @@ const CommentsDisplay = ({
           InputProps={{
             disableUnderline: true,
             sx: {
-              color: "white",
+              color: "black",
             },
           }}
         />

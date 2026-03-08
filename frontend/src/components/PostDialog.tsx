@@ -48,7 +48,7 @@ const PostDialog = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "black",
+            backgroundColor: "white",
           }}
         >
           <img
