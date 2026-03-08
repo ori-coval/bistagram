@@ -24,6 +24,8 @@ const PostDialog = ({
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
   return (
     dialogPost ?
     <div>
@@ -48,7 +50,7 @@ const PostDialog = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "white",
+            backgroundColor: prefersDarkMode ? "#212328" : "white",
           }}
         >
           <img
@@ -87,7 +89,6 @@ const PostDialog = ({
             position: "absolute",
             right: 12,
             top: 12,
-            color: "white",
           }}
         >
           <CloseIcon />

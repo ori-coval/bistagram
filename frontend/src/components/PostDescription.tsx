@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const PostDescription = ({
@@ -9,9 +9,10 @@ const PostDescription = ({
   usernames: string[];
 }) => {
   const navigate = useNavigate();
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   return (
-    <Typography sx={{ wordWrap: "break-word" }}>
+    <Typography sx={{ wordWrap: "break-word", color: prefersDarkMode ? "white" : "black" }}>
       <>
         {description.split(/(\s+)/).map((word, index) => {
           return word.startsWith("@") && usernames.includes(word.slice(1)) ? (

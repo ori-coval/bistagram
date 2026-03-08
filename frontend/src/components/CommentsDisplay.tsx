@@ -11,6 +11,7 @@ import {
   CardContent,
   Typography,
   Stack,
+  useMediaQuery,
 } from "@mui/material";
 import { useState } from "react";
 import type { DialogPost } from "../types";
@@ -37,6 +38,7 @@ const CommentsDisplay = ({
 }) => {
   const [newComment, setNewComment] = useState("");
   const [copiedPost, setCopiedPost] = useState(false);
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   const copyShareLink = () => {
     copy(`${FRONTEND_URL}/post/${dialogPost.ID}`);
@@ -53,8 +55,8 @@ const CommentsDisplay = ({
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        backgroundColor: "white",
         overflow: "hidden",
+        backgroundColor: prefersDarkMode ? "#212328" : "white",
       }}
     >
       <List
@@ -75,7 +77,8 @@ const CommentsDisplay = ({
             <ListItemText
               primary={`${comment.CommentUser.Username} • ${getPostTime(comment.Date)}`}
               secondary={comment.Comment}
-              sx={{ color: "black" }}
+              primaryTypographyProps={{ color: prefersDarkMode ? "white" : "black" }}
+              secondaryTypographyProps={{ color: prefersDarkMode ? "white" : "black" }}
             />
           </ListItem>
         ))}
@@ -87,7 +90,7 @@ const CommentsDisplay = ({
           description={dialogPost.Description}
           usernames={usernames}
         />
-        <Stack direction="row" spacing={1} sx={{ marginTop: 1 }}>
+        <Stack direction="row" spacing={1} sx={{ marginTop: 1, color: prefersDarkMode ? "white" : "black" }}>
           <div
             onClick={() => {
               changeLikeStatus(dialogPost.ID, dialogPost.AlreadyLiked);
@@ -130,7 +133,7 @@ const CommentsDisplay = ({
           InputProps={{
             disableUnderline: true,
             sx: {
-              color: "black",
+              color: prefersDarkMode ? "white" : "black",
             },
           }}
         />
