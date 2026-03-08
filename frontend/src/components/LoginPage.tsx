@@ -3,17 +3,20 @@ import LoginForm from "./LoginForm";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { Stack } from "@mui/material";
+import { BACKEND_URL } from "../constants";
 
-const LoginPage = () => {
+const LoginPage = ({ nextPage }: { nextPage: string }) => {
   const navigate = useNavigate();
   const [, setCookies] = useCookies(["access"]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const submitLogin = () => {
     axios
       .post(
-        "http://85.65.146.6:9512/login",
+        BACKEND_URL + "/login",
         {
           username: username,
           password: password,
@@ -28,16 +31,29 @@ const LoginPage = () => {
       .then((response) => {
         const token = response.data.access_token;
         const expires = new Date();
-        expires.setMinutes(expires.getMinutes() + 30);
+        expires.setHours(expires.getHours() + 12);
         setCookies("access", { token: token, expires: expires.toString() });
-        navigate("/home-page");
+        navigate(nextPage);
+      })
+      .catch((err) => {
+        setLoginError(err.response.data.detail);
       });
   };
 
   return (
-    <div>
-      <LoginForm setUsername={setUsername} setPassword={setPassword} submitLogin={submitLogin} />
-    </div>
+    <Stack
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      sx={{ minHeight: "97vh" }}
+    >
+      <LoginForm
+        setUsername={setUsername}
+        setPassword={setPassword}
+        submitLogin={submitLogin}
+        loginError={loginError}
+      />
+    </Stack>
   );
 };
 

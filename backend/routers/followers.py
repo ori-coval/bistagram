@@ -37,6 +37,15 @@ def get_user_followers(
     return db_handler.get_user_followers(db, username=username)
 
 
+@router.get("/user/{username}/following")
+def get_user_following(
+    username: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return db_handler.get_user_following(db, username=username)
+
+
 @router.get("/user/{username}/followers-count")
 def get_user_followers_count(
     username: str,

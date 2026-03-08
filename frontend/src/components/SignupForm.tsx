@@ -1,20 +1,28 @@
+import { Button, Stack, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 const SignupForm = ({
     setUsername,
     setPassword,
     submitSignup,
+    signupError,
 }: {
     setUsername: (arg: string) => void;
     setPassword: (arg: string) => void;
     submitSignup: () => void;
+    signupError: string;
 }) => {
+    const navigate = useNavigate();
     return (
-        <div>
-            <label htmlFor="username">Username</label><br />
-            <input type="text" id="username" name="username" onChange={(e) => setUsername(e.target.value)} /><br />
-            <label htmlFor="password">Password</label><br />
-            <input type="password" id="password" name="password" onChange={(e) => setPassword(e.target.value)} /><br />
-            <button onClick={submitSignup}>Signup</button>
-        </div>
+        <Stack direction="column" spacing={2}>
+            <TextField label="Username" variant="standard" onChange={(e) => setUsername(e.target.value)}/>
+            <TextField label="Password" type="password" variant="standard" onChange={(e) => setPassword(e.target.value)}/>
+            <Button variant="contained" onClick={submitSignup}>Signup</Button>
+            <Typography variant="body2" color="red" hidden={signupError !== "USER_EXISTS"} sx={{ textAlign: "center" }}>
+                Username already exists.
+            </Typography>
+            <Button sx={{ width: 250 }} variant="text" onClick={() => { navigate("/login") }}>Already have an account?</Button>
+        </Stack>
     );
 };
 

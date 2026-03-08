@@ -1,14 +1,11 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
 class PostBase(BaseModel):
     Description: str
-    image: str
-
-
-class UserAuth(BaseModel):
-    Username: str
-    HashedPassword: str
+    Image: str
 
 
 class SignUp(BaseModel):
@@ -21,13 +18,13 @@ class ProfilePicture(BaseModel):
 
 
 class ProfileBio(BaseModel):
-    text: str
+    Bio: str
 
 
 class CommentBase(BaseModel):
     PostID: int
     Comment: str
-    ParentCommentID: int | None = None
+    ParentCommentID: Optional[int] = None
 
 
 class followBase(BaseModel):

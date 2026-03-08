@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
 from auth.oauth2 import get_current_user
+import image_utils
 from db.models import User
 from routers.posts import get_user_posts
 from db import db_handler
-from db.schemas import SignUp, UserAuth, ProfileBio, ProfilePicture
+from db.schemas import SignUp, ProfileBio, ProfilePicture
 from db.database import get_db
 from sqlalchemy.orm.session import Session
 
@@ -22,24 +23,31 @@ def sign_up(request: SignUp, db: Session = Depends(get_db)):
 def search_user(
     search_text: str,
     db: Session = Depends(get_db),
-    current_user: UserAuth = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     return db_handler.get_users_by_search_text(db, search_text)
 
 
-@router.get("/user/{username}/all")
+@router.get("/user/{username}/profile")
 def get_user_profile(
     username: str,
     db: Session = Depends(get_db),
-    current_user: UserAuth = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     user = db_handler.get_user_by_username(db, username=username)
     posts = get_user_posts(username=username, db=db, current_user=current_user)
-    return {"user": user, "posts": posts}
+    already_following = db_handler.is_following(db, username, current_user)
+    return {
+        "User": user,
+        "Posts": posts,
+        "AlreadyFollowing": already_following,
+        "FollowersCount": db_handler.get_followers_count(db, username),
+        "FollowingCount": db_handler.get_following_count(db, username),
+    }
 
 
-@router.get("/user/profile")
-def get_user_homepage(
+@router.get("/self/profile")
+def get_current_user_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -52,17 +60,31 @@ def get_user_homepage(
 def edit_profile_picture(
     request: ProfilePicture,
     db: Session = Depends(get_db),
-    current_user: UserAuth = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
-    return db_handler.update_user_profile_picture(
-        db, current_user.Username, request.image
+    image = image_utils.resize_base64_image(
+        request.image, max_size=(400, 400), quality=70
     )
+    return db_handler.update_user_profile_picture(db, current_user.Username, image)
 
 
 @router.post("/user/edit-profile-bio")
 def edit_profile_bio(
     request: ProfileBio,
     db: Session = Depends(get_db),
-    current_user: UserAuth = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
-    return db_handler.update_user_bio(db, current_user.Username, request.text)
+    return db_handler.update_user_bio(db, current_user.Username, request.Bio)
+
+
+@router.get("/self/home/posts")
+def get_user_homepage_posts(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return db_handler.get_following_posts(db, current_user)
+
+
+@router.get("/users/usernames")
+def get_all_usernames(db: Session = Depends(get_db)):
+    return db_handler.get_all_usernames(db)

@@ -17,11 +17,11 @@ def login(
     user = db.query(User).filter(User.Username == request.username).first()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Invalid credentials"
+            status_code=status.HTTP_404_NOT_FOUND, detail="INVALID_CREDENTIALS"
         )
     if not verify_password(request.password, user.HashedPassword):
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password"
+            status_code=status.HTTP_404_NOT_FOUND, detail="INVALID_CREDENTIALS"
         )
     access_token = create_access_token(data={"Username": user.Username})
 

@@ -1,3 +1,13 @@
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardMedia,
+  Stack,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useRef } from "react";
 
 const UploadPostForm = ({
@@ -5,15 +15,21 @@ const UploadPostForm = ({
   setImage,
   setDescription,
   submitPost,
+  uploadError,
+  setUploadError,
 }: {
   image: string;
   setImage: (arg: string) => void;
   setDescription: (arg: string) => void;
   submitPost: () => void;
+  uploadError: string;
+  setUploadError: (arg: string) => void;
 }) => {
   const imageRef = useRef<HTMLInputElement>(null);
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const loadImage = () => {
+    setUploadError("");
     if (!imageRef.current || !imageRef.current.files) {
       return;
     }
@@ -36,23 +52,70 @@ const UploadPostForm = ({
   };
 
   return (
-    <div>
-      {image ? <img src={image} /> : <></>}
-      <br />
+    <Stack direction="column" alignItems="center">
+      <Card
+        sx={{
+          width: { xs: "100%", sm: 400, md: 500 },
+          maxWidth: 500,
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }}
+      >
+        <CardMedia
+          component="img"
+          src={image}
+          sx={{ marginBottom: 1, maxHeight: 400, objectFit: "contain" }}
+        />
+      </Card>
       <input
+        hidden
         type="file"
         accept="image/png, image/jpeg"
         ref={imageRef}
         onChange={loadImage}
       />
+      <Button
+        variant="text"
+        onClick={() => {
+          imageRef.current ? imageRef.current.click() : {};
+        }}
+      >
+        Choose Image
+      </Button>
       <br />
-      <input
-        type="text"
-        onChange={(e) => setDescription(e.target.value)}
+      <TextField
+        label="Description"
+        fullWidth
+        multiline
+        sx={{
+          "& .MuiInputLabel-root": {
+            color: prefersDarkMode ? "white" : "black",
+          },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": { borderColor: prefersDarkMode ? "white" : "gray" },
+            "&:hover fieldset": { borderColor: prefersDarkMode ? "white" : "black" }
+          },
+        }}
+        inputProps={{ style: { color: prefersDarkMode ? "white" : "black" } }}
+        onChange={(e) => {
+          setDescription(e.target.value);
+          setUploadError("");
+        }}
       />
+      <Typography
+        variant="body2"
+        color="red"
+        fontSize={16}
+        hidden={uploadError == ""}
+        sx={{ textAlign: "center" }}
+      >
+        {uploadError}.
+      </Typography>
       <br />
-      <button onClick={submitPost}>Upload</button>
-    </div>
+      <Button variant="contained" onClick={submitPost}>
+        Upload
+      </Button>
+    </Stack>
   );
 };
 

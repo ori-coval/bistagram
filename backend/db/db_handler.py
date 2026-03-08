@@ -2,16 +2,23 @@ from datetime import datetime
 from hmac import new
 from turtle import pos
 from fastapi import HTTPException, status
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, load_only
 from db.schemas import CommentBase, PostBase, followBase
 from .models import Comments, Likes, Post, PostImage, User, follows
 from sqlalchemy.orm.session import Session
 from auth.hashing import get_password_hash
 from typing import List
-from sqlalchemy import func
+from sqlalchemy import and_, func, select
 
 
 def create_post(db: Session, request: PostBase, current_user: User) -> Post:
+
+    if request.Image is None or request.Image == "":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Image is required",
+        )
+
     new_post = Post(
         UserID=current_user.ID, Date=datetime.now(), Description=request.Description
     )
@@ -26,7 +33,7 @@ def create_post(db: Session, request: PostBase, current_user: User) -> Post:
         .ID  # type: ignore
     )
 
-    new_image = PostImage(PostID=post_ID, image=request.image)
+    new_image = PostImage(PostID=post_ID, Image=request.Image)
     db.add(new_image)
     db.commit()
     db.refresh(new_image)
@@ -40,8 +47,8 @@ def get_post_by_id(db: Session, post_id: int) -> Post:
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    likes_count = len(post.likes)
-    del post.likes
+    likes_count = len(post.Likes)
+    del post.Likes
     post.likes_count = likes_count
     return post
 
@@ -53,25 +60,50 @@ def get_posts_likes(db: Session, post_id: int) -> List[Likes]:
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    return post.likes
+    return post.Likes
 
 
-def get_all_posts_by_user(db: Session, username: str) -> List[Post]:
-    user_id = get_user_by_username(db, username=username).ID
-    posts = (
-        db.query(Post)
-        .options(
-            joinedload(Post.images), joinedload(Post.likes), joinedload(Post.comments)
-        )
-        .filter(Post.UserID == user_id)
-        .all()
+def get_all_posts_by_user(db: Session, username: str) -> List[dict]:
+    user = get_user_by_username(db, username)
+
+    images_count_subquery = (
+        select(func.count(PostImage.ID))
+        .where(PostImage.PostID == Post.ID)
+        .scalar_subquery()
     )
-    for post in posts:
-        post.likes_count = len(post.likes)
-        post.comments_count = len(post.comments)
-        del post.likes
-        del post.comments
-    return posts
+    likes_count_subquery = (
+        select(func.count(Likes.ID)).where(Likes.PostID == Post.ID).scalar_subquery()
+    )
+    comments_count_subquery = (
+        select(func.count(Comments.ID))
+        .where(Comments.PostID == Post.ID)
+        .scalar_subquery()
+    )
+
+    raw_posts = (
+        db.query(
+            Post,
+            images_count_subquery.label("image_count"),
+            likes_count_subquery.label("likes_count"),
+            comments_count_subquery.label("comments_count"),
+        )
+        .filter(Post.UserID == user.ID)
+        .order_by(Post.Date.desc())
+    ).all()
+
+    results = []
+    for post, image_count, likes_count, comments_count in raw_posts:
+        results.append(
+            {
+                "ID": post.ID,
+                "Description": post.Description,
+                "Date": post.Date,
+                "ImageCount": int(image_count or 0),
+                "LikesCount": int(likes_count or 0),
+                "CommentsCount": int(comments_count or 0),
+            }
+        )
+    return results
 
 
 def get_user_by_username(db: Session, username: str) -> User:
@@ -92,7 +124,7 @@ def create_user(db: Session, username: str, password: str) -> User:
     if does_user_exist(db, username=username):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"User with username {username} already exists",
+            detail=f"USER_EXISTS",
         )
     new_user = User(Username=username, HashedPassword=get_password_hash(password))
     db.add(new_user)
@@ -131,7 +163,7 @@ def get_post_likes_count(db: Session, post_id: int) -> int:
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    return len(likes.likes)
+    return len(likes.Likes)
 
 
 def like_post(db: Session, post_id: int, user_id: int):
@@ -141,7 +173,7 @@ def like_post(db: Session, post_id: int, user_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {post_id} not found",
         )
-    if any(like.UserID == user_id for like in post.likes):
+    if any(like.UserID == user_id for like in post.Likes):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User has already liked this post",
@@ -164,17 +196,12 @@ def unlike_post(db: Session, post_id: int, user_id: int):
     db.commit()
 
 
-def get_post_comments(db: Session, post_id: int):
-    post = db.query(Post).filter(Post.ID == post_id).first()
-    if not post:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id {post_id} not found",
-        )
-    return post.comments
+def create_comment(
+    db: Session, request: CommentBase, current_user: User
+) -> List[Comments]:
+    if not db.query(Post).filter(Post.ID == request.PostID).first():
+        raise HTTPException(404, "Post not found")
 
-
-def create_comment(db: Session, request: CommentBase, current_user: User) -> Comments:
     comment = Comments(
         PostID=request.PostID,
         ParentCommentID=request.ParentCommentID,
@@ -186,7 +213,7 @@ def create_comment(db: Session, request: CommentBase, current_user: User) -> Com
     db.add(comment)
     db.commit()
     db.refresh(comment)
-    return comment
+    return get_post_display(db, request.PostID, current_user)
 
 
 def follow_user(db: Session, request: followBase, current_user: User):
@@ -252,6 +279,30 @@ def get_user_followers(db: Session, username: str):
     return followers
 
 
+def get_user_following(db: Session, username: str):
+    user = get_user_by_username(db, username=username)
+    following = (
+        db.query(User)
+        .join(follows, follows.FollowedID == User.ID)
+        .filter(follows.FollowerID == user.ID)
+        .all()
+    )
+    return following
+
+
+def is_following(db: Session, username: str, current_user: User) -> bool:
+    user = get_user_by_username(db, username=username)
+    return (
+        db.query(follows)
+        .filter(
+            follows.FollowerID == current_user.ID,
+            follows.FollowedID == user.ID,
+        )
+        .first()
+        is not None
+    )
+
+
 def get_followers_count(db: Session, username: str) -> int:
     user = get_user_by_username(db, username=username)
     followers_count = (
@@ -260,3 +311,132 @@ def get_followers_count(db: Session, username: str) -> int:
         .scalar()
     )
     return followers_count
+
+
+def get_following_count(db: Session, username: str) -> int:
+    user = get_user_by_username(db, username=username)
+    following_count = (
+        db.query(func.count(follows.FollowedID))
+        .filter(follows.FollowerID == user.ID)
+        .scalar()
+    )
+    return following_count
+
+
+def get_post_display(db: Session, post_id: int, current_user: User):
+    post = (
+        db.query(Post)
+        .options(
+            joinedload(Post.Images),
+            joinedload(Post.User),
+            joinedload(Post.Comments).joinedload(Comments.CommentUser),
+        )
+        .order_by(Post.Date.desc())
+        .filter(Post.ID == post_id)
+        .first()
+    )
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found",
+        )
+    Images = []
+    for image in post.Images:
+        Images.append(image.Image)
+
+    del post.Images
+    post.RawImages = Images
+    post.AlreadyLiked = any(like.UserID == current_user.ID for like in post.Likes)
+    post.CommentsCount = len(post.Comments)
+    post.LikesCount = len(post.Likes)
+    del post.Likes
+    post.Comments.sort(key=lambda comment: comment.Date, reverse=True)
+    return post
+
+
+def get_following_posts(db: Session, current_user: User):
+    following = db.query(follows).filter(follows.FollowerID == current_user.ID).all()
+    following_ids = [follow.FollowedID for follow in following]
+    if not following_ids:
+        return []
+
+    images_count_subquery = (
+        select(func.count(PostImage.ID))
+        .where(PostImage.PostID == Post.ID)
+        .scalar_subquery()
+    )
+    likes_count_subquery = (
+        select(func.count(Likes.ID)).where(Likes.PostID == Post.ID).scalar_subquery()
+    )
+    comments_count_subquery = (
+        select(func.count(Comments.ID))
+        .where(Comments.PostID == Post.ID)
+        .scalar_subquery()
+    )
+
+    already_liked_subquery = (
+        select(func.count(Likes.ID))
+        .where(and_(Likes.PostID == Post.ID, Likes.UserID == current_user.ID))
+        .scalar_subquery()
+    )
+
+    raw_posts = (
+        db.query(
+            Post,
+            images_count_subquery.label("image_count"),
+            likes_count_subquery.label("likes_count"),
+            comments_count_subquery.label("comments_count"),
+            already_liked_subquery.label("already_liked_count"),
+        )
+        .join(User, User.ID == Post.UserID)
+        .filter(Post.UserID.in_(following_ids))
+        .order_by(Post.Date.desc())
+    ).all()
+
+    posts = []
+    for (
+        post,
+        image_count,
+        likes_count,
+        comments_count,
+        already_liked_count,
+    ) in raw_posts:
+        user = (
+            db.query(User)
+            .options(load_only(User.Username, User.ProfileImage))
+            .filter(User.ID == post.UserID)
+            .one()
+        )
+
+        posts.append(
+            {
+                "ID": post.ID,
+                "Description": post.Description,
+                "Date": post.Date,
+                "User": {"Username": user.Username, "ProfileImage": user.ProfileImage},
+                "ImageCount": int(image_count or 0),
+                "LikesCount": int(likes_count or 0),
+                "CommentsCount": int(comments_count or 0),
+                "AlreadyLiked": bool(
+                    already_liked_count and int(already_liked_count) > 0
+                ),
+            }
+        )
+
+    return posts
+
+
+def get_post_images(db: Session, post_id: int) -> Post:
+    post = (
+        db.query(Post)
+        .options(joinedload(Post.Images))
+        .filter(Post.ID == post_id)
+        .first()
+    )
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+
+def get_all_usernames(db: Session) -> List[str]:
+    return list(db.execute(select(User.Username)).scalars().all())

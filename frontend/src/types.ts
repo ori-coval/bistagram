@@ -1,26 +1,69 @@
-export type Post = {
+export type ScrollPost = {
   ID: number;
-  UserID: number;
   Date: string;
   Description: string;
-  images: Image[];
+  LikesCount: number;
+  CommentsCount: number;
+  AlreadyLiked: boolean;
+  ImageCount?: number;
+  User: {
+    Username: string;
+    ProfileImage: string;
+  };
 };
 
-export type User = {
-  ID: number;
-  HashedPassword: string;
+export type ProfileUser = {
   Username: string;
   ProfileImage: string;
   Bio: string;
 };
 
-export type Image = {
+export type ProfilePost = {
   ID: number;
-  PostID: number;
-  image: string;
-}
+  Description: string;
+  Date : string;
+  ImageCount: number;
+  LikesCount: number;
+  CommentsCount: number;
+};
 
-export type UserData = {
-  user: User;
-  posts: Post[];
-}
+export type ProfileData = {
+  User: ProfileUser;
+  Posts: ProfilePost[];
+  AlreadyFollowing: boolean;
+  FollowersCount: number;
+  FollowingCount: number;
+};
+
+export type DialogComment = {
+  ID: number;
+  ParentCommentID: number;
+  Date: string;
+  Comment: string;
+  CommentUser: {
+    Username: string;
+    ProfileImage: string;
+  };
+};
+
+export type DialogPost = {
+  ID: number;
+  Date: string;
+  Description: string;
+  LikesCount: number;
+  CommentsCount: number;
+  AlreadyLiked: boolean;
+  RawImages: string[];
+  User: {
+    Username: string;
+    ProfileImage: string;
+  };
+  Comments: DialogComment[];
+};
+
+export type User = {
+  ID: number;
+  Username: string;
+  ProfileImage: string;
+  Bio: string;
+};
