@@ -6,11 +6,13 @@ const SignupForm = ({
     setPassword,
     submitSignup,
     signupError,
+    loginError,
 }: {
     setUsername: (arg: string) => void;
     setPassword: (arg: string) => void;
     submitSignup: () => void;
     signupError: string;
+    loginError: string;
 }) => {
     const navigate = useNavigate();
     return (
@@ -20,6 +22,9 @@ const SignupForm = ({
             <Button variant="contained" onClick={submitSignup}>Signup</Button>
             <Typography variant="body2" color="red" hidden={signupError !== "USER_EXISTS"} sx={{ textAlign: "center" }}>
                 Username already exists.
+            </Typography>
+            <Typography variant="body2" color="red" hidden={loginError !== "INVALID_CREDENTIALS"} sx={{ textAlign: "center" }}>
+                Incorrect username or password.
             </Typography>
             <Button sx={{ width: 250 }} variant="text" onClick={() => { navigate("/login") }}>Already have an account?</Button>
         </Stack>

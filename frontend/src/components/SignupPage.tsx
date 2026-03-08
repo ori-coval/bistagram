@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom";
 import SignupForm from "./SignupForm";
 import { Stack } from "@mui/material";
 import { BACKEND_URL } from "../constants";
+import { useCookies } from "react-cookie";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [, setCookies] = useCookies(["access"]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [signupError, setSignupError] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const submitSignup = () => {
     if (username.includes(" ") || password.includes(" ") || username.length === 0 || password.length === 0) {
@@ -31,7 +34,30 @@ const SignupPage = () => {
         },
       )
       .then((_) => {
-        navigate("/login");
+        axios
+        .post(
+          BACKEND_URL + "/login",
+          {
+            username: username,
+            password: password,
+          },
+          {
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          },
+        )
+        .then((response) => {
+          const token = response.data.access_token;
+          const expires = new Date();
+          expires.setHours(expires.getHours() + 12);
+          setCookies("access", { token: token, expires: expires.toString() });
+          navigate("/profile-page");
+        })
+        .catch((err) => {
+          setLoginError(err.response.data.detail);
+        });
       })
       .catch((err) => {
         setSignupError(err.response.data.detail);
@@ -39,7 +65,7 @@ const SignupPage = () => {
   };
   return (
     <Stack direction="row" justifyContent="center" alignItems="center" sx={{ minHeight: "97vh" }}>
-      <SignupForm setUsername={setUsername} setPassword={setPassword} submitSignup={submitSignup} signupError={signupError} />
+      <SignupForm setUsername={setUsername} setPassword={setPassword} submitSignup={submitSignup} signupError={signupError} loginError={loginError} />
     </Stack>
   );
 };
