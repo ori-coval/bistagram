@@ -165,9 +165,9 @@ const UserSearchPage = () => {
                       </IconButton>
                     )}
 
-                    {loading && (
+                    {/* {loading && (
                       <CircularProgress color="inherit" size={20} />
-                    )}
+                    )} */}
 
                     {params.InputProps.endAdornment}
                   </>
