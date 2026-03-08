@@ -139,7 +139,7 @@ const ProfilePage = ({ username }: { username: string }) => {
     axios.post(
       profileData?.AlreadyFollowing
         ? BACKEND_URL + "/unfollow"
-        : BACKEND_URL + "$/follow",
+        : BACKEND_URL + "/follow",
       { Username: username },
       {
         headers: {
