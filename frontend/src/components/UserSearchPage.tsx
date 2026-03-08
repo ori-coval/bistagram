@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
+import IconButton from "@mui/material/IconButton";
+import ClearIcon from "@mui/icons-material/Clear";
 import type { User } from "../types";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../constants";
@@ -89,8 +91,8 @@ const UserSearchPage = () => {
           },
         }}
         open={true}
-        // onOpen={() => setSearchBarOpen(true)}
-        // onClose={() => setSearchBarOpen(false)}
+        disableClearable
+        forcePopupIcon={false}
         inputValue={searchValue}
         onInputChange={(_, newValue) => setSearchValue(newValue)}
         options={options}
@@ -154,9 +156,19 @@ const UserSearchPage = () => {
                 ),
                 endAdornment: (
                   <>
-                    {loading ? (
+                    {searchValue && (
+                      <IconButton
+                        size="small"
+                        onClick={() => setSearchValue("")}
+                      >
+                        <ClearIcon fontSize="small" />
+                      </IconButton>
+                    )}
+
+                    {loading && (
                       <CircularProgress color="inherit" size={20} />
-                    ) : null}
+                    )}
+
                     {params.InputProps.endAdornment}
                   </>
                 ),
