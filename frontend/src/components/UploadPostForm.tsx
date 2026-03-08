@@ -6,6 +6,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useRef } from "react";
 
@@ -25,6 +26,7 @@ const UploadPostForm = ({
   setUploadError: (arg: string) => void;
 }) => {
   const imageRef = useRef<HTMLInputElement>(null);
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const loadImage = () => {
     setUploadError("");
@@ -85,6 +87,16 @@ const UploadPostForm = ({
         label="Description"
         fullWidth
         multiline
+        sx={{
+          "& .MuiInputLabel-root": {
+            color: prefersDarkMode ? "white" : "black",
+          },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": { borderColor: prefersDarkMode ? "white" : "gray" },
+            "&:hover fieldset": { borderColor: prefersDarkMode ? "white" : "black" }
+          },
+        }}
+        inputProps={{ style: { color: prefersDarkMode ? "white" : "black" } }}
         onChange={(e) => {
           setDescription(e.target.value);
           setUploadError("");
