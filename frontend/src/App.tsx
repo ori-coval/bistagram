@@ -9,6 +9,7 @@ import ProfilePage from "./components/ProfilePage";
 import HomePage from "./components/HomePage";
 import Layout from "./components/Layout";
 import SharedPostPage from "./components/SharedPostPage";
+import AnonymousLogin from "./components/AnonymusLogin";
 
 function App() {
   const [cookies,] = useCookies(["access"]);
@@ -54,7 +55,7 @@ function App() {
         :
           <>
             <Route path="/post/:postID" element={<DynamicSharedPostPageLogin />}/>
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<AnonymousLogin />} />
           </>
         )}
       </Routes>
