@@ -49,7 +49,8 @@ const UploadPostPage = () => {
   const [uploadError, setUploadError] = useState("");
 
   const submitPost = async () => {
-    if (!description || !image) {
+    // if (!description || !image) {
+    if (!image) {
       setUploadError("Please fill in all fields.");
       return;
     }
