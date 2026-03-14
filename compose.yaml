@@ -7,9 +7,8 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: bistagram
-      MYSQL_USER: root
-      MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_HOST: "%"
     volumes:
       - mysql-test-vol:/var/lib/mysql
 
